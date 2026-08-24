@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>My Membership | Games Grid</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<meta name="ext-resource-dependency" content="./assets/gg-logo.png" />
+<script src="./gg-supabase.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #050509; overflow-x: hidden; }
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #00A8FF; text-decoration: none; }
+  a:hover { color: #B026FF; }
+  ::selection { background: #8B2CFF; color: #fff; }
+  input, button, select { font-family: inherit; }
+  @keyframes ggPulse { 0%,100% { opacity: .45; } 50% { opacity: .9; } }
+  @keyframes ggRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div style="position:relative;background:#050509;color:#fff;min-height:100vh;overflow:hidden">
+  <div style="position:absolute;top:-150px;left:-160px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(139,44,255,0.22),transparent 65%);filter:blur(30px);pointer-events:none"></div>
+  <div style="position:absolute;bottom:-200px;right:-180px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(22,119,255,0.18),transparent 65%);filter:blur(30px);pointer-events:none"></div>
+
+  <header style="position:relative;z-index:10;border-bottom:1px solid rgba(176,38,255,0.28);background:rgba(5,5,9,0.72);backdrop-filter:blur(14px)">
+    <div style="max-width:1100px;margin:0 auto;padding:10px clamp(16px,3vw,40px);display:flex;align-items:center;justify-content:space-between;gap:20px">
+      <a href="./Games%20Grid%20Home.dc.html" style="display:flex;flex:none;align-items:center">
+        <img src="./assets/gg-logo.png" alt="Games Grid" width="132" height="59" style="display:block;width:clamp(104px,9.5vw,132px);height:auto" />
+      </a>
+      <div style="display:flex;align-items:center;gap:10px">
+        <sc-if value="{{ signedIn }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ signOut }}" style="padding:11px 16px;border-radius:10px;border:1px solid rgba(139,44,255,0.3);background:transparent;color:#B7B7C5;cursor:pointer;font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;white-space:nowrap">SIGN OUT</button>
+        </sc-if>
+        <a href="./Games%20Grid%20Home.dc.html" style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;color:#B7B7C5;padding:11px 16px;border-radius:10px;border:1px solid rgba(139,44,255,0.28);white-space:nowrap">BACK TO SITE</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:clamp(26px,4vw,54px) clamp(16px,3vw,40px) 90px">
+
+    <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:70px 20px;text-align:center;color:#6f6f80;font-family:Rajdhani,sans-serif;font-weight:600;font-size:15px;letter-spacing:.14em">LOADING…</div>
+    </sc-if>
+
+    <!-- ============ SIGN IN / SIGN UP ============ -->
+    <sc-if value="{{ showAuth }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:440px;margin:0 auto">
+        <sc-if value="{{ chosenPlan }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:16px 20px;border-radius:14px;background:linear-gradient(120deg,rgba(139,44,255,0.2),rgba(17,17,26,0.9));border:1px solid rgba(176,38,255,0.45);margin-bottom:24px">
+            <div>
+              <div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.18em;color:#B026FF;margin-bottom:5px">JOINING</div>
+              <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:16px">{{ chosenPlan }}</div>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:24px;line-height:1">{{ chosenPrice }}</div>
+              <div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.1em;color:#B7B7C5;margin-top:4px">{{ chosenDetail }}</div>
+            </div>
+          </div>
+        </sc-if>
+        <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.3em;color:#00A8FF;margin-bottom:12px">MEMBER ACCESS</div>
+        <h1 style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(26px,4vw,40px);margin:0 0 14px">{{ authHeading }}</h1>
+        <p style="margin:0 0 28px;font-size:14.5px;color:#B7B7C5;line-height:1.6">{{ authIntro }}</p>
+
+        <div style="background:linear-gradient(168deg,rgba(139,44,255,0.13),rgba(17,17,26,0.96));border:1px solid rgba(176,38,255,0.38);border-radius:18px;padding:clamp(20px,2.6vw,30px);display:grid;gap:16px">
+          <sc-if value="{{ isSignUp }}" hint-placeholder-val="{{ false }}">
+            <label style="display:grid;gap:8px">
+              <span style="{{ labelStyle }}">FULL NAME</span>
+              <input value="{{ name }}" onInput="{{ setName }}" placeholder="Your name" style="{{ fieldStyle }}" />
+            </label>
+            <label style="display:grid;gap:8px">
+              <span style="{{ labelStyle }}">MOBILE NUMBER</span>
+              <input value="{{ phone }}" onInput="{{ setPhone }}" placeholder="10-digit mobile" style="{{ fieldStyle }}" />
+            </label>
+          </sc-if>
+          <sc-if value="{{ needsCredentials }}" hint-placeholder-val="{{ true }}">
+            <label style="display:grid;gap:8px">
+              <span style="{{ labelStyle }}">EMAIL</span>
+              <input type="email" value="{{ email }}" onInput="{{ setEmail }}" placeholder="you@example.com" style="{{ fieldStyle }}" />
+            </label>
+            <label style="display:grid;gap:8px">
+              <span style="{{ labelStyle }}">PASSWORD</span>
+              <input type="password" value="{{ password }}" onInput="{{ setPassword }}" placeholder="At least 6 characters" style="{{ fieldStyle }}" />
+            </label>
+          </sc-if>
+
+          <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:13px 15px;border-radius:11px;background:rgba(255,91,110,0.1);border:1px solid rgba(255,91,110,0.4);color:#FF8A98;font-size:13.5px;line-height:1.5">{{ error }}</div>
+          </sc-if>
+          <sc-if value="{{ notice }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:13px 15px;border-radius:11px;background:rgba(61,220,132,0.1);border:1px solid rgba(61,220,132,0.4);color:#3ddc84;font-size:13.5px;line-height:1.5">{{ notice }}</div>
+          </sc-if>
+
+          <button onClick="{{ submitAuth }}" disabled="{{ busy }}" style="{{ submitStyle }}">{{ submitLabel }}</button>
+          <sc-if value="{{ showToggle }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ toggleMode }}" style="padding:12px;border:none;background:none;color:#00A8FF;cursor:pointer;font-size:13.5px;font-family:Rajdhani,sans-serif;font-weight:600;letter-spacing:.06em;text-decoration:underline">{{ toggleLabel }}</button>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ SIGNED IN ============ -->
+    <sc-if value="{{ showAccount }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;gap:clamp(16px,2.2vw,24px);animation:ggRise .5s ease both">
+
+        <div>
+          <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.3em;color:#00A8FF;margin-bottom:12px">MY ACCOUNT</div>
+          <h1 style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(24px,3.6vw,40px);margin:0">{{ greeting }}</h1>
+        </div>
+
+        <!-- Active membership -->
+        <sc-if value="{{ hasMembership }}" hint-placeholder-val="{{ false }}">
+          <section style="{{ membershipCardStyle }}">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px">
+              <div>
+                <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.22em;color:#B026FF;margin-bottom:8px">MEMBERSHIP</div>
+                <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(20px,2.6vw,30px)">{{ planName }}</div>
+              </div>
+              <span style="{{ statusStyle }}">{{ statusLabel }}</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:24px">
+              <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+                <div style="padding:18px;border-radius:14px;background:rgba(5,5,9,0.55);border:1px solid rgba(139,44,255,0.18)">
+                  <div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.16em;color:#6f6f80;margin-bottom:9px">{{ s.k }}</div>
+                  <div style="{{ s.style }}">{{ s.v }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+              <span style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.16em;color:#B7B7C5">HOURS USED</span>
+              <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:14px">{{ usedLabel }}</span>
+            </div>
+            <div style="height:10px;border-radius:20px;background:rgba(5,5,9,0.7);overflow:hidden;border:1px solid rgba(139,44,255,0.2)">
+              <div style="{{ barStyle }}"></div>
+            </div>
+
+            <sc-if value="{{ expiryWarning }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:22px;padding:15px 18px;border-radius:12px;background:rgba(246,194,68,0.09);border:1px solid rgba(246,194,68,0.4);color:#F6C244;font-size:13.5px;line-height:1.55">{{ expiryWarning }}</div>
+            </sc-if>
+
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:26px">
+              <sc-if value="{{ canBook }}" hint-placeholder-val="{{ false }}">
+                <a href="./Games%20Grid%20Booking.dc.html#ps5" style="font-family:Orbitron,sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#fff;padding:16px 26px;border-radius:11px;background:linear-gradient(100deg,#8B2CFF,#1677FF)">BOOK WITH MY HOURS</a>
+              </sc-if>
+              <sc-if value="{{ needsRenewal }}" hint-placeholder-val="{{ false }}">
+                <a href="{{ renewHref }}" style="font-family:Orbitron,sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#fff;padding:16px 26px;border-radius:11px;background:linear-gradient(100deg,#8B2CFF,#1677FF)">{{ renewLabel }}</a>
+              </sc-if>
+            </div>
+          </section>
+        </sc-if>
+
+        <!-- Checkout — a tier was picked on the way in -->
+        <sc-if value="{{ showCheckout }}" hint-placeholder-val="{{ false }}">
+          <section style="background:linear-gradient(160deg,rgba(139,44,255,0.22),rgba(22,119,255,0.12) 55%,rgba(17,17,26,0.97));border:1px solid rgba(176,38,255,0.45);border-radius:18px;padding:clamp(22px,2.8vw,34px)">
+            <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.22em;color:#B026FF;margin-bottom:12px">CONFIRM YOUR MEMBERSHIP</div>
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(21px,2.8vw,32px);margin:0 0 24px">{{ chosenPlan }}</h2>
+
+            <div style="display:grid;gap:13px;padding:20px 0;border-top:1px solid rgba(139,44,255,0.2);border-bottom:1px solid rgba(139,44,255,0.2);margin-bottom:22px">
+              <sc-for list="{{ checkoutLines }}" as="l" hint-placeholder-count="4">
+                <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline">
+                  <span style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:13px;letter-spacing:.1em;color:#B7B7C5">{{ l.k }}</span>
+                  <span style="{{ l.style }}">{{ l.v }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ checkoutBenefits }}" hint-placeholder-val="{{ false }}">
+              <ul style="list-style:none;margin:0 0 24px;padding:0;display:grid;gap:10px">
+                <sc-for list="{{ checkoutBenefits }}" as="b" hint-placeholder-count="4">
+                  <li style="display:flex;gap:10px;font-size:14px;color:#B7B7C5;line-height:1.5">
+                    <span style="color:#00A8FF;font-family:Rajdhani,sans-serif;font-weight:700">+</span>{{ b }}
+                  </li>
+                </sc-for>
+              </ul>
+            </sc-if>
+
+            <div style="padding:17px 19px;border-radius:13px;background:rgba(0,168,255,0.07);border:1px solid rgba(0,168,255,0.32);margin-bottom:22px">
+              <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.16em;color:#00A8FF;margin-bottom:9px">HOW TO PAY</div>
+              <p style="margin:0;font-size:13.5px;color:#B7B7C5;line-height:1.6">{{ payCopy }}</p>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:12px">
+              <sc-if value="{{ hasContact }}" hint-placeholder-val="{{ false }}">
+                <a href="{{ requestHref }}" style="flex:1;min-width:190px;text-align:center;font-family:Orbitron,sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#fff;padding:17px 24px;border-radius:12px;background:linear-gradient(100deg,#8B2CFF,#1677FF)">{{ requestLabel }}</a>
+              </sc-if>
+              <button onClick="{{ clearPlan }}" style="flex:1;min-width:150px;padding:17px 24px;border-radius:12px;border:1px solid rgba(139,44,255,0.35);background:transparent;color:#B7B7C5;cursor:pointer;font-family:Orbitron,sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.12em">CHOOSE ANOTHER TIER</button>
+            </div>
+          </section>
+        </sc-if>
+
+        <!-- No membership yet -->
+        <sc-if value="{{ noMembership }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#11111A;border:1px dashed rgba(139,44,255,0.35);border-radius:18px;padding:clamp(24px,3vw,38px)">
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(19px,2.4vw,26px);margin:0 0 14px">NO ACTIVE MEMBERSHIP</h2>
+            <p style="margin:0 0 24px;font-size:14.5px;color:#B7B7C5;line-height:1.65;max-width:52ch">{{ joinCopy }}</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:24px">
+              <sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+                <div style="{{ p.style }}">
+                  <div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:16px;letter-spacing:.06em;margin-bottom:12px">{{ p.name }}</div>
+                  <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:28px;line-height:1;margin-bottom:6px">{{ p.price }}</div>
+                  <div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.12em;color:#B026FF;margin-bottom:16px">{{ p.detail }}</div>
+                  <sc-if value="{{ p.clickable }}" hint-placeholder-val="{{ false }}">
+                    <a href="{{ p.href }}" style="{{ p.ctaStyle }}">{{ p.cta }}</a>
+                  </sc-if>
+                  <sc-if value="{{ p.locked }}" hint-placeholder-val="{{ true }}">
+                    <span style="{{ p.ctaStyle }}">{{ p.cta }}</span>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <p style="margin:0;font-size:13px;color:#6f6f80;line-height:1.6">Pay at the counter and our staff activate your membership straight away. Online payment is coming soon.</p>
+          </section>
+        </sc-if>
+
+        <!-- Bookings -->
+        <section style="background:#11111A;border:1px solid rgba(139,44,255,0.22);border-radius:18px;padding:clamp(20px,2.4vw,30px)">
+          <div style="font-family:Orbitron,sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;margin-bottom:20px">MY BOOKINGS</div>
+          <sc-if value="{{ hasBookings }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;gap:8px">
+              <sc-for list="{{ bookings }}" as="b" hint-placeholder-count="4">
+                <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;padding:13px 15px;border-radius:11px;background:rgba(5,5,9,0.5)">
+                  <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:13.5px;color:#00A8FF">{{ b.reference }}</span>
+                  <span style="font-size:13.5px;color:#fff">{{ b.kind }}</span>
+                  <span style="font-size:13px;color:#B7B7C5">{{ b.when }}</span>
+                  <span style="{{ b.statusStyle }}">{{ b.status }}</span>
+                  <span style="margin-left:auto;font-family:Rajdhani,sans-serif;font-weight:700;font-size:14.5px">{{ b.total }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noBookings }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:0;font-size:14px;color:#6f6f80;line-height:1.6">No bookings yet. <a href="./Games%20Grid%20Booking.dc.html">Book your first slot</a>.</p>
+          </sc-if>
+        </section>
+      </div>
+    </sc-if>
+  </main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const KIND_LABEL = { ps5: "PS5", simulator: "Racing Simulator", projector: "Projector Room" };
+const STATUS_TINT = {
+  confirmed: ["#0f2d1c", "#3ddc84"], arrived: ["#0f2d1c", "#3ddc84"],
+  held: ["#2d2409", "#F6C244"], completed: ["#16161f", "#B7B7C5"],
+  cancelled: ["#2d1013", "#FF5B6E"], no_show: ["#2d1013", "#FF5B6E"],
+  expired: ["#16161f", "#6f6f80"]
+};
+
+class Component extends DCLogic {
+  state = {
+    loading: true, signedIn: false, mode: "in", busy: false,
+    email: "", password: "", name: "", phone: "",
+    error: "", notice: "",
+    customer: null, membership: null, bookings: [], plans: [], contact: {},
+    planParam: ""
+  };
+
+  componentDidMount() {
+    // A tier chosen on the homepage arrives as ?plan=GAMER
+    try {
+      const p = new URLSearchParams(location.search).get("plan");
+      if (p) this.setState({ planParam: p, mode: "up" });
+    } catch (e) { /* no query string */ }
+    this.boot();
+  }
+
+  async boot() {
+    if (!window.GG) { this.setState({ loading: false }); return; }
+    const token = window.GG.restore();
+    if (!token) { await this.loadPublic(); this.setState({ loading: false }); return; }
+    await this.loadAccount();
+  }
+
+  async loadPublic() {
+    try {
+      const [plans, settings] = await Promise.all([
+        window.GG.select("membership_plans", "select=*&active=eq.true&order=sort_order").catch(() => []),
+        window.GG.select("settings", "select=key,value&key=in.(whatsapp_number,contact_phone)").catch(() => [])
+      ]);
+      const contact = {};
+      (settings || []).forEach((r) => {
+        contact[r.key] = typeof r.value === "string" ? r.value : (r.value && r.value.value) || "";
+      });
+      this.setState({ plans: plans || [], contact });
+    } catch (err) { /* keep defaults */ }
+  }
+
+  // The signed-in user's id, read from the token itself. Staff sessions can
+  // read every customer, so queries must filter on this rather than rely on
+  // row-level security to scope them.
+  authUid() {
+    const t = window.GG.getToken();
+    if (!t) return null;
+    try {
+      return JSON.parse(atob(t.split(".")[1])).sub || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async loadAccount() {
+    const uid = this.authUid();
+    if (!uid) {
+      window.GG.signOut();
+      await this.loadPublic();
+      this.setState({ loading: false, signedIn: false });
+      return;
+    }
+    try {
+      const rows = await window.GG.select("customers",
+        "select=*&auth_user_id=eq." + uid + "&limit=1");
+      const customer = rows && rows[0] ? rows[0] : null;
+      if (!customer) {
+        // Signed in but never claimed — ask for name and phone.
+        await this.loadPublic();
+        this.setState({ loading: false, signedIn: true, mode: "claim" });
+        return;
+      }
+      const [membership, bookings] = await Promise.all([
+        window.GG.rpc("my_membership").catch(() => null),
+        window.GG.select("bookings",
+          "select=reference,kind,starts_at,ends_at,status,total_paise&customer_id=eq." +
+          customer.id + "&order=starts_at.desc&limit=12").catch(() => [])
+      ]);
+      await this.loadPublic();
+      this.setState({
+        loading: false, signedIn: true, customer,
+        membership: (membership && membership[0]) || null,
+        bookings: bookings || []
+      });
+    } catch (err) {
+      // A stale token — start over at sign-in.
+      window.GG.signOut();
+      await this.loadPublic();
+      this.setState({ loading: false, signedIn: false });
+    }
+  }
+
+  field() {
+    return "padding:15px 16px;border-radius:12px;background:rgba(11,11,18,0.78);border:1px solid rgba(139,44,255,0.42);color:#fff;font-size:15px;outline:none;width:100%";
+  }
+
+  async submit() {
+    const s = this.state;
+    this.setState({ error: "", notice: "", busy: true });
+    try {
+      if (s.mode === "up") {
+        if (s.name.trim().length < 2) throw new Error("Please enter your name");
+        if (s.phone.replace(/\D/g, "").length < 10) throw new Error("Please enter a 10-digit mobile number");
+        if (s.password.length < 6) throw new Error("Password must be at least 6 characters");
+        const res = await fetch(window.GG_SUPABASE.url + "/auth/v1/signup", {
+          method: "POST",
+          headers: { apikey: window.GG_SUPABASE.key, "Content-Type": "application/json" },
+          body: JSON.stringify({ email: s.email.trim(), password: s.password })
+        });
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.msg || body.error_description || "Could not create the account");
+        if (!body.access_token) {
+          this.setState({ busy: false, notice: "Check your email to confirm the account, then sign in." , mode: "in" });
+          return;
+        }
+        window.GG.setToken(body.access_token);
+        try { sessionStorage.setItem("ggToken", body.access_token); } catch (e) {}
+        await window.GG.rpc("claim_account", { p_full_name: s.name.trim(), p_phone: s.phone.trim() });
+        this.setState({ busy: false, password: "" });
+        await this.loadAccount();
+        return;
+      }
+
+      if (s.mode === "claim") {
+        if (s.name.trim().length < 2) throw new Error("Please enter your name");
+        if (s.phone.replace(/\D/g, "").length < 10) throw new Error("Please enter a 10-digit mobile number");
+        try {
+          await window.GG.rpc("claim_account", { p_full_name: s.name.trim(), p_phone: s.phone.trim() });
+        } catch (err) {
+          throw new Error(/claim_account|function/i.test(err.message)
+            ? "Member accounts aren't switched on yet. Run 12_member_accounts.sql in Supabase."
+            : err.message);
+        }
+        this.setState({ busy: false });
+        await this.loadAccount();
+        return;
+      }
+
+      await window.GG.signIn(s.email.trim(), s.password);
+      this.setState({ busy: false, password: "" });
+      await this.loadAccount();
+    } catch (err) {
+      this.setState({ busy: false, error: err.message });
+    }
+  }
+
+  waHref(message) {
+    let n = String(this.state.contact.whatsapp_number || "").replace(/\D/g, "");
+    if (n.length === 11 && n.charAt(0) === "0") n = n.slice(1);
+    if (n.length === 10) n = "91" + n;
+    if (n) return "https://wa.me/" + n + (message ? "?text=" + encodeURIComponent(message) : "");
+    const phone = String(this.state.contact.contact_phone || "").replace(/[^\d+]/g, "");
+    return phone ? "tel:" + phone : "";
+  }
+
+  renderVals() {
+    const s = this.state;
+    const m = s.membership;
+    const claiming = s.mode === "claim";
+    const signUp = s.mode === "up" || claiming;
+    const left = m ? Number(m.hours_left) : 0;
+    const total = m ? Number(m.hours_total) : 0;
+    const used = m ? Number(m.hours_used) : 0;
+    const pct = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0;
+    const expired = m ? !m.active : false;
+    const hasLink = !!this.waHref();
+    const picked = s.planParam
+      ? s.plans.find((p) => p.name.toUpperCase() === s.planParam.toUpperCase()) || null
+      : null;
+
+    return {
+      loading: s.loading,
+      showAuth: !s.loading && (!s.signedIn || claiming),
+      showAccount: !s.loading && s.signedIn && !claiming,
+      signedIn: s.signedIn,
+      signOut: () => { window.GG.signOut(); this.setState({ signedIn: false, customer: null, membership: null, bookings: [], mode: "in" }); },
+
+      labelStyle: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.16em;color:#B026FF",
+      fieldStyle: this.field(),
+
+      isSignUp: signUp,
+      needsCredentials: !claiming,
+      authHeading: claiming ? "ALMOST THERE" : signUp ? "CREATE YOUR ACCOUNT" : "MEMBER SIGN IN",
+      authIntro: claiming
+        ? "Tell us your name and mobile number so we can link your bookings and membership."
+        : signUp
+          ? (picked
+              ? "Create your account, then pay at the counter to activate. Your hours and expiry date appear here."
+              : "An account lets you see your membership hours, expiry date and booking history.")
+          : "Sign in to see your membership hours and booking history.",
+      name: s.name, phone: s.phone, email: s.email, password: s.password,
+      setName: (ev) => this.setState({ name: ev.target.value }),
+      setPhone: (ev) => this.setState({ phone: ev.target.value }),
+      setEmail: (ev) => this.setState({ email: ev.target.value }),
+      setPassword: (ev) => this.setState({ password: ev.target.value }),
+      error: s.error || false,
+      notice: s.notice || false,
+      busy: s.busy,
+      submitAuth: () => this.submit(),
+      submitLabel: s.busy ? "PLEASE WAIT…" : claiming ? "CONTINUE" : signUp ? "CREATE ACCOUNT" : "SIGN IN",
+      submitStyle: "width:100%;padding:17px;border:none;border-radius:12px;font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:.13em;color:#fff;background:linear-gradient(100deg,#8B2CFF,#1677FF);" +
+        (s.busy ? "opacity:.6;cursor:wait;" : "cursor:pointer;"),
+      // Never offered mid-claim: leaving that step would strand an account
+      // with no customer record and no way back to the form.
+      showToggle: !claiming,
+      toggleMode: () => { if (!claiming) this.setState({ mode: s.mode === "up" ? "in" : "up", error: "", notice: "" }); },
+      toggleLabel: signUp ? "Already have an account? Sign in" : "New here? Create an account",
+
+      greeting: s.customer ? "HELLO, " + String(s.customer.full_name || "").split(" ")[0].toUpperCase() : "MY ACCOUNT",
+
+      // ---- the tier picked on the way in ----
+      chosenPlan: picked ? picked.name : false,
+      chosenPrice: picked ? (picked.price_paise ? "₹" + Math.round(picked.price_paise / 100).toLocaleString("en-IN") : "₹—") : "",
+      chosenDetail: picked
+        ? (picked.hours_included ? picked.hours_included + " HOURS · " + picked.duration_days + " DAYS" : picked.duration_days + " DAYS")
+        : "",
+      showCheckout: !!picked && !m,
+      checkoutLines: picked ? [
+        { k: "PRICE", v: picked.price_paise ? "₹" + Math.round(picked.price_paise / 100).toLocaleString("en-IN") : "To be confirmed",
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:22px;background:linear-gradient(100deg,#B026FF,#00A8FF);-webkit-background-clip:text;background-clip:text;color:transparent" },
+        { k: "HOURS INCLUDED", v: picked.hours_included ? picked.hours_included + " hours" : "—",
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:17px" },
+        { k: "VALID FOR", v: picked.duration_days + " days",
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:17px" },
+        { k: "HOURS COVER", v: picked.covers_sim ? "PS5 + simulator" : "PS5 only",
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:17px" }
+      ].concat(picked.price_paise && picked.hours_included
+        ? [{ k: "MEMBER RATE", v: "₹" + Math.round((picked.price_paise / 100) / picked.hours_included) + " per hour",
+             style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:17px;color:#3ddc84" }]
+        : []) : [],
+      checkoutBenefits: picked && (picked.benefits || []).length ? picked.benefits : false,
+      payCopy: "Your account is ready. Pay at the counter and our staff activate the membership straight away — your hours appear here immediately. Online payment is coming soon.",
+      hasContact: hasLink,
+      requestLabel: this.state.contact.whatsapp_number ? "TELL US ON WHATSAPP" : "CALL TO CONFIRM",
+      requestHref: this.waHref(picked
+        ? "Hi Games Grid, I've created my account and I'd like to activate the " + picked.name +
+          " membership" + (picked.price_paise ? " (₹" + Math.round(picked.price_paise / 100).toLocaleString("en-IN") + ")" : "") + "."
+        : "Hi Games Grid, I'd like to join a membership."),
+      clearPlan: () => {
+        this.setState({ planParam: "" });
+        try { history.replaceState(null, "", location.pathname); } catch (e) {}
+      },
+
+      hasMembership: !!m,
+      noMembership: !m && !picked,
+      membershipCardStyle: (expired
+        ? "background:linear-gradient(165deg,rgba(255,91,110,0.1),rgba(17,17,26,0.97));border:1px solid rgba(255,91,110,0.4);"
+        : "background:linear-gradient(160deg,rgba(139,44,255,0.24),rgba(22,119,255,0.13) 55%,rgba(17,17,26,0.97));border:1px solid rgba(176,38,255,0.45);box-shadow:0 30px 70px -46px rgba(139,44,255,0.9);") +
+        "border-radius:18px;padding:clamp(22px,2.8vw,34px)",
+      planName: m ? m.plan_name : "",
+      statusLabel: expired ? "EXPIRED" : "ACTIVE",
+      statusStyle: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;padding:8px 14px;border-radius:8px;" +
+        (expired
+          ? "color:#FF8A98;background:rgba(255,91,110,0.12);border:1px solid rgba(255,91,110,0.42);"
+          : "color:#3ddc84;background:rgba(61,220,132,0.1);border:1px solid rgba(61,220,132,0.42);"),
+      stats: m ? [
+        {
+          k: "HOURS LEFT",
+          v: left + " of " + total,
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:26px;line-height:1;" +
+            (left <= 0 ? "color:#FF8A98" : "background:linear-gradient(100deg,#B026FF,#00A8FF);-webkit-background-clip:text;background-clip:text;color:transparent")
+        },
+        {
+          k: "VALID UNTIL",
+          v: new Date(m.ends_on + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:20px;line-height:1.2"
+        },
+        {
+          k: "DAYS LEFT",
+          v: m.days_left > 0 ? String(m.days_left) : "0",
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:26px;line-height:1;color:" +
+            (m.days_left <= 0 ? "#FF8A98" : m.days_left <= 5 ? "#F6C244" : "#fff")
+        }
+      ] : [],
+      usedLabel: used + " of " + total + " hours",
+      barStyle: "height:100%;width:" + pct + "%;background:linear-gradient(90deg,#B026FF,#00A8FF);transition:width .5s ease",
+      expiryWarning: expired
+        ? "Your membership ended on " + new Date(m.ends_on + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ". Contact us to renew and get a fresh block of hours."
+        : m && m.days_left <= 5
+          ? "Your membership ends in " + m.days_left + (m.days_left === 1 ? " day" : " days") + ". Renew at the counter to keep your hours running."
+          : m && left <= 0
+            ? "You've used all your hours. Bookings are charged at the normal rate until you renew."
+            : false,
+      canBook: !!m && !expired && left > 0,
+      needsRenewal: !!m && (expired || left <= 0),
+      renewLabel: hasLink ? (this.state.contact.whatsapp_number ? "RENEW ON WHATSAPP" : "CALL TO RENEW") : "CONTACT US TO RENEW",
+      renewHref: this.waHref("Hi Games Grid, I'd like to renew my " + (m ? m.plan_name : "") + " membership."),
+
+      joinCopy: "A membership gives you a block of hours at a lower rate, valid for a set period. Pick a tier and we'll activate it at the counter.",
+      plans: s.plans.map((p) => ({
+        name: p.name,
+        price: p.price_paise ? "₹" + Math.round(p.price_paise / 100).toLocaleString("en-IN") : "₹—",
+        detail: p.price_paise
+          ? (p.hours_included ? p.hours_included + " HOURS · " + p.duration_days + " DAYS" : p.duration_days + " DAYS")
+          : "PRICING TO BE CONFIRMED",
+        style: "padding:20px;border-radius:14px;display:flex;flex-direction:column;" +
+          (p.popular
+            ? "background:linear-gradient(165deg,rgba(139,44,255,0.2),rgba(5,5,9,0.6));border:1px solid rgba(176,38,255,0.5);"
+            : "background:rgba(5,5,9,0.5);border:1px solid rgba(139,44,255,0.22);"),
+        cta: p.price_paise
+          ? (hasLink ? "ENQUIRE" : "AT THE COUNTER")
+          : "COMING SOON",
+        ctaStyle: "margin-top:auto;text-align:center;font-family:Orbitron,sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.11em;padding:13px;border-radius:10px;" +
+          (p.price_paise && hasLink
+            ? "color:#fff;background:linear-gradient(100deg,#8B2CFF,#1677FF);"
+            : "color:#6f6f80;border:1px dashed rgba(139,44,255,0.3);cursor:default;"),
+        clickable: !!(p.price_paise && hasLink),
+        locked: !(p.price_paise && hasLink),
+        href: p.price_paise && hasLink
+          ? this.waHref("Hi Games Grid, I'd like to join the " + p.name + " membership (₹" + Math.round(p.price_paise / 100).toLocaleString("en-IN") + ").")
+          : ""
+      })),
+
+      hasBookings: s.bookings.length > 0,
+      noBookings: s.bookings.length === 0,
+      bookings: s.bookings.map((b) => {
+        const tint = STATUS_TINT[b.status] || STATUS_TINT.expired;
+        return {
+          reference: b.reference,
+          kind: KIND_LABEL[b.kind] || b.kind,
+          when: new Date(b.starts_at).toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata", day: "numeric", month: "short", hour: "numeric", minute: "2-digit"
+          }),
+          status: String(b.status).replace("_", " ").toUpperCase(),
+          statusStyle: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:10px;letter-spacing:.1em;padding:4px 9px;border-radius:6px;background:" +
+            tint[0] + ";color:" + tint[1],
+          total: window.GG.money(b.total_paise)
+        };
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

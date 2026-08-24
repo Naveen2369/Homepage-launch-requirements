@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Games Grid | PS5 Gaming, Racing Simulators &amp; Private Projector Room</title>
+<meta name="description" content="Games Grid — Where Legends Play. Experience PS5 gaming, racing simulators, private projector rooms and gaming tournaments near Vignan College.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&amp;family=Inter:wght@400;500;600&amp;family=Rajdhani:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<meta name="ext-resource-dependency" content="./assets/gg-logo.png">
+<meta name="ext-resource-dependency" content="./assets/lite/hero-lounge.jpg">
+<meta name="ext-resource-dependency" content="./assets/lite/final-cta.jpg">
+<meta name="ext-resource-dependency" content="./assets/lite/tournament-arena.jpg">
+<script src="./gg-supabase.js"></script>
+<script src="./art-data.js"></script>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#050509"></rect><g fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M47 38c-2-5-7-8-12-8-8 0-13 6-13 15s5 15 13 15c7 0 11-5 11-11h-9" stroke="var(--gg-neon)"></path><path d="M78 38c-2-5-7-8-12-8-8 0-13 6-13 15s5 15 13 15c7 0 11-5 11-11h-9" stroke="var(--gg-blue)"></path></g></svg></template>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --gg-purple: #8B2CFF;
+    --gg-blue: #1677FF;
+    --gg-neon: #B026FF;
+    --gg-highlight: #00A8FF;
+    --gg-bg: #050509;
+    --gg-bg2: #0B0B12;
+    --gg-card: #11111A;
+    --gg-head: Orbitron, sans-serif;
+    --gg-body: Inter, system-ui, sans-serif;
+    --gg-num: Rajdhani, sans-serif;
+  }
+  html, body { margin: 0; padding: 0; background: #050509; overflow-x: hidden; }
+  html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+  section[id] { scroll-margin-top: 96px; }
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: var(--gg-highlight); text-decoration: none; }
+  a:hover { color: var(--gg-neon); }
+  ::selection { background: var(--gg-purple); color: #fff; }
+  @keyframes ggDrift { 0% { transform: translate3d(0,0,0) scale(1.04); } 50% { transform: translate3d(-1.5%, -1%, 0) scale(1.09); } 100% { transform: translate3d(0,0,0) scale(1.04); } }
+  @keyframes ggFloat { 0% { transform: translateY(0); opacity: .18; } 50% { transform: translateY(-38px); opacity: .55; } 100% { transform: translateY(0); opacity: .18; } }
+  @keyframes ggPulse { 0%,100% { opacity: .45; } 50% { opacity: .9; } }
+  @keyframes ggSweep { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  @keyframes ggMarquee { from { transform: translateX(0); } to { transform: translateX(calc(-1 * var(--gg-unit))); } }
+</style>
+</helmet>
+
+<div style="background:#050509;color:#fff">
+
+  <sc-if value="{{ promoOn }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ promoBarStyle }}">
+      <span style="width:7px;height:7px;border-radius:50%;background:currentColor;animation:ggPulse 1.8s ease-in-out infinite;flex:none"></span>
+      <span style="font-family:var(--gg-head);font-weight:700;font-size:11px;letter-spacing:.16em">{{ promoMessage }}</span>
+      <span style="font-family:var(--gg-num);font-weight:600;font-size:14px;opacity:.9">{{ promoDetail }}</span>
+    </div>
+  </sc-if>
+  <sc-if value="{{ promoScrollOn }}" hint-placeholder-val="{{ false }}">
+    <div ref="{{ promoOuterRef }}" style="{{ promoMarqueeOuter }}">
+      <div style="{{ promoMarqueeInner }}">
+        <sc-for list="{{ promoTracks }}" as="track" hint-placeholder-count="2">
+          <div ref="{{ track.ref }}" style="display:flex;align-items:center;flex:none">
+            <sc-for list="{{ track.items }}" as="t" hint-placeholder-count="2">
+              <span style="display:flex;align-items:center;gap:12px;flex:none;padding:0 clamp(20px,2.6vw,44px);white-space:nowrap">
+                <span style="width:6px;height:6px;border-radius:50%;background:currentColor;flex:none"></span>
+                <span style="font-family:var(--gg-head);font-weight:700;font-size:11px;letter-spacing:.16em">{{ t.message }}</span>
+                <span style="font-family:var(--gg-num);font-weight:600;font-size:14px;opacity:.9">{{ t.detail }}</span>
+              </span>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <header style="position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(5,5,9,0.72);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 18%, transparent)">
+    <div style="max-width:1400px;margin:0 auto;padding:10px clamp(16px,3vw,40px);display:flex;align-items:center;gap:clamp(16px,2.5vw,40px);justify-content:flex-start">
+      <a href="#top" style="display:flex;flex:none;align-items:center;color:#fff">
+        <img src="./assets/gg-logo.png" alt="Games Grid" width="132" height="59" style="display:block;width:clamp(104px,9.5vw,132px);height:auto">
+      </a>
+
+      <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+        <nav style="display:flex;flex:none;align-items:center;gap:clamp(13px,1.5vw,26px);font-family:var(--gg-head);font-size:11.5px;font-weight:500;letter-spacing:.14em;white-space:nowrap">
+          <a href="#top" style="color:#fff;padding:6px 0;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 0%, transparent)" style-hover="color:var(--gg-highlight);border-bottom:1px solid var(--gg-highlight)">HOME</a>
+          <a href="#experiences" style="color:#B7B7C5;padding:6px 0" style-hover="color:var(--gg-highlight)">EXPERIENCES</a>
+          <a href="#games" style="color:#B7B7C5;padding:6px 0" style-hover="color:var(--gg-highlight)">GAMES</a>
+          <a href="#pricing" style="color:#B7B7C5;padding:6px 0" style-hover="color:var(--gg-highlight)">PRICING</a>
+          <sc-if value="{{ showTournaments }}" hint-placeholder-val="{{ true }}"><a href="#tournaments" style="color:#B7B7C5;padding:6px 0" style-hover="color:var(--gg-highlight)">TOURNAMENTS</a></sc-if>
+          <sc-if value="{{ showMembership }}" hint-placeholder-val="{{ true }}"><a href="#membership" style="color:#B7B7C5;padding:6px 0" style-hover="color:var(--gg-highlight)">MEMBERSHIP</a></sc-if>
+          <a href="#contact" style="color:#B7B7C5;padding:6px 0" style-hover="color:var(--gg-highlight)">CONTACT</a>
+          
+        </nav>
+      </sc-if>
+
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:10px">
+          <a href="./Games%20Grid%20Booking.dc.html" style="font-family:var(--gg-head);font-size:11px;font-weight:700;letter-spacing:.12em;color:#fff;padding:11px 16px;border-radius:9px;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue));white-space:nowrap">BOOK</a>
+          <button onClick="{{ toggleMenu }}" aria-label="Menu" style="width:44px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:rgba(17,17,26,0.9);border:1px solid color-mix(in srgb, var(--gg-purple) 28%, transparent);border-radius:10px;cursor:pointer">
+            <span style="display:block;width:18px;height:1.6px;background:#fff"></span>
+            <span style="display:block;width:18px;height:1.6px;background:#fff"></span>
+            <span style="display:block;width:18px;height:1.6px;background:#fff"></span>
+          </button>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <nav style="border-top:1px solid color-mix(in srgb, var(--gg-purple) 18%, transparent);padding:8px 20px 22px;display:grid;gap:2px;font-family:var(--gg-head);font-size:13px;letter-spacing:.12em;background:rgba(5,5,9,0.97)">
+        <a href="#top" onClick="{{ closeMenu }}" style="color:#fff;padding:14px 4px;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 12%, transparent)">HOME</a>
+        <a href="#experiences" onClick="{{ closeMenu }}" style="color:#B7B7C5;padding:14px 4px;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 12%, transparent)">EXPERIENCES</a>
+        <a href="#games" onClick="{{ closeMenu }}" style="color:#B7B7C5;padding:14px 4px;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 12%, transparent)">GAMES</a>
+        <a href="#pricing" onClick="{{ closeMenu }}" style="color:#B7B7C5;padding:14px 4px;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 12%, transparent)">PRICING</a>
+        <sc-if value="{{ showTournaments }}" hint-placeholder-val="{{ true }}"><a href="#tournaments" onClick="{{ closeMenu }}" style="color:#B7B7C5;padding:14px 4px;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 12%, transparent)">TOURNAMENTS</a></sc-if>
+        <sc-if value="{{ showMembership }}" hint-placeholder-val="{{ true }}"><a href="#membership" onClick="{{ closeMenu }}" style="color:#B7B7C5;padding:14px 4px;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 12%, transparent)">MEMBERSHIP</a></sc-if>
+        <a href="#contact" onClick="{{ closeMenu }}" style="color:#B7B7C5;padding:14px 4px">CONTACT</a>
+      </nav>
+    </sc-if>
+  </header>
+
+  <section id="top" style="position:relative;min-height:clamp(600px,92vh,940px);display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 16%, transparent)">
+    <div style="position:absolute;inset:0;animation:ggDrift 34s ease-in-out infinite">
+      <img id="gg-hero" src="./assets/lite/hero-lounge.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+    </div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,5,9,0.72) 0%,rgba(5,5,9,0.45) 40%,rgba(5,5,9,0.95) 100%);pointer-events:none"></div>
+    <div style="position:absolute;top:-20%;left:-10%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb, var(--gg-purple) 22%, transparent),transparent 62%);filter:blur(40px);pointer-events:none;animation:ggPulse 12s ease-in-out infinite"></div>
+    <div style="position:absolute;bottom:-25%;right:-12%;width:55vw;height:55vw;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb, var(--gg-blue) 20%, transparent),transparent 62%);filter:blur(40px);pointer-events:none"></div>
+    <sc-for list="{{ particles }}" as="p" hint-placeholder-count="0">
+      <span style="{{ p.style }}"></span>
+    </sc-for>
+
+    <div style="position:relative;z-index:2;max-width:1400px;margin:0 auto;width:100%;padding:clamp(80px,12vh,150px) clamp(20px,3vw,40px) clamp(46px,7vh,80px);display:flex;flex-direction:column;align-items:center;text-align:center">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <span style="width:clamp(26px,4vw,54px);height:1.5px;background:linear-gradient(90deg,transparent,var(--gg-neon))"></span>
+        <span style="font-family:var(--gg-head);font-weight:700;font-size:clamp(12px,1.2vw,16px);letter-spacing:.3em;color:var(--gg-neon);white-space:nowrap">WELCOME TO</span>
+        <span style="width:clamp(26px,4vw,54px);height:1.5px;background:linear-gradient(90deg,var(--gg-neon),transparent)"></span>
+      </div>
+      <h1 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(48px,9vw,124px);line-height:0.94;letter-spacing:-0.015em;margin:0 0 14px">
+        <span style="display:block;color:#fff">GAMES</span>
+        <span style="display:block;background:linear-gradient(100deg,var(--gg-neon),var(--gg-blue) 55%,var(--gg-highlight));-webkit-background-clip:text;background-clip:text;color:transparent">GRID</span>
+      </h1>
+      <div style="font-family:var(--gg-head);font-weight:700;font-size:clamp(13px,1.5vw,22px);letter-spacing:.32em;color:#fff;margin:0 0 30px">WHERE LEGENDS PLAY</div>
+      <p style="font-family:var(--gg-head);font-weight:700;font-size:clamp(15px,1.9vw,26px);line-height:1.35;letter-spacing:.02em;color:#fff;margin:0 0 22px;text-wrap:balance">
+        BRING YOUR SQUAD. PICK YOUR GAME.<br><span style="color:var(--gg-neon)">MAKE YOUR LEGEND.</span>
+      </p>
+      <p style="font-size:clamp(15px,1.3vw,19px);line-height:1.62;color:#B7B7C5;max-width:52ch;margin:0 0 12px">Next-gen gaming lounge with PS5 Gaming, Racing Simulators, Private Projector Room and more.</p>
+      <p style="font-family:var(--gg-num);font-weight:700;font-size:clamp(15px,1.2vw,18px);letter-spacing:.26em;color:#fff;margin:0 0 38px">PLAY. COMPETE. WIN.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px">
+        <a href="#experiences" style="font-family:var(--gg-head);font-size:13px;font-weight:700;letter-spacing:.14em;color:#fff;padding:18px 34px;border-radius:12px;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue));box-shadow:0 14px 40px -14px color-mix(in srgb, var(--gg-purple) 95%, transparent)" style-hover="transform:translateY(-2px);box-shadow:0 18px 46px -12px color-mix(in srgb, var(--gg-blue) 95%, transparent)">BOOK YOUR SLOT</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);background:var(--gg-bg2)">
+    <div style="max-width:1400px;margin:0 auto;padding:0 clamp(20px,3vw,40px);display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      <sc-for list="{{ strip }}" as="s" hint-placeholder-count="4">
+        <div style="padding:30px 26px 30px 0;display:flex;gap:16px;align-items:flex-start">
+          <div style="width:40px;height:40px;flex:none;border-radius:10px;border:1px solid color-mix(in srgb, var(--gg-purple) 30%, transparent);background:color-mix(in srgb, var(--gg-purple) 9%, transparent);display:grid;place-items:center;color:var(--gg-neon)">
+            <span style="font-family:var(--gg-head);font-size:13px;font-weight:700">{{ s.mark }}</span>
+          </div>
+          <div>
+            <div style="font-family:var(--gg-head);font-size:12.5px;font-weight:700;letter-spacing:.1em;margin-bottom:7px">{{ s.title }}</div>
+            <div style="font-size:13.5px;color:#B7B7C5;line-height:1.5">{{ s.sub }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="experiences" style="padding:clamp(64px,9vw,130px) clamp(20px,3vw,40px);max-width:1400px;margin:0 auto">
+    <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;margin-bottom:clamp(34px,5vw,60px)">
+      <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-highlight);margin-bottom:14px">01 — EXPERIENCES</div>
+      <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(28px,4.4vw,58px);margin:0;letter-spacing:-0.01em">CHOOSE YOUR EXPERIENCE</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(18px,2vw,28px)">
+      <sc-for list="{{ experiences }}" as="x" hint-placeholder-count="3">
+        <article data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease,box-shadow .3s ease;background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-purple) 20%, transparent);border-radius:20px;overflow:hidden;display:flex;flex-direction:column" style-hover="transform:translateY(-6px);box-shadow:0 24px 60px -30px color-mix(in srgb, var(--gg-purple) 80%, transparent);border:1px solid color-mix(in srgb, var(--gg-neon) 45%, transparent)">
+          <div style="position:relative;height:236px">
+            <img src="{{ x.src }}" alt="{{ x.name }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(17,17,26,0.92));pointer-events:none"></div>
+            <div style="position:absolute;top:16px;left:16px;padding:7px 13px;border-radius:8px;background:rgba(5,5,9,0.75);border:1px solid color-mix(in srgb, var(--gg-purple) 35%, transparent);font-family:var(--gg-num);font-weight:700;font-size:12.5px;letter-spacing:.14em;color:#fff;pointer-events:none">{{ x.badge }}</div>
+          </div>
+          <div style="padding:26px 26px 28px;display:flex;flex-direction:column;flex:1;gap:18px">
+            <h3 style="font-family:var(--gg-head);font-weight:700;font-size:20px;margin:0;letter-spacing:.02em">{{ x.name }}</h3>
+            <p style="margin:0;color:#B7B7C5;font-size:14.5px;line-height:1.6;white-space:pre-line">{{ x.desc }}</p>
+            <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap">
+              <span style="font-family:var(--gg-num);font-weight:700;font-size:40px;line-height:1;color:#fff">{{ x.price }}</span>
+              <span style="font-family:var(--gg-num);font-weight:600;font-size:17px;color:#6f6f80;text-decoration:line-through;padding-bottom:4px">{{ x.was }}</span>
+              <span style="font-family:var(--gg-num);font-weight:700;font-size:11.5px;letter-spacing:.14em;color:var(--gg-highlight);border:1px solid color-mix(in srgb, var(--gg-highlight) 40%, transparent);border-radius:6px;padding:4px 8px;margin-bottom:4px">OPENING PRICE</span>
+            </div>
+            <ul style="list-style:none;margin:0;padding:0;display:grid;gap:9px">
+              <sc-for list="{{ x.features }}" as="f" hint-placeholder-count="5">
+                <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#B7B7C5">
+                  <span style="color:var(--gg-neon);font-family:var(--gg-num);font-weight:700">/</span>{{ f }}
+                </li>
+              </sc-for>
+            </ul>
+            <div style="margin-top:auto;padding-top:6px">
+              <a href="{{ x.href }}" style="display:block;text-align:center;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.14em;color:#fff;padding:16px;border-radius:11px;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue))" style-hover="box-shadow:0 12px 34px -14px color-mix(in srgb, var(--gg-purple) 95%, transparent)">{{ x.cta }}</a>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+    <p style="margin:26px 0 0;font-size:13.5px;color:#6f6f80">Projector room slots: 11:30 AM – 2:30 PM · 3:00 PM – 6:00 PM · 6:30 PM – 9:30 PM. Extra PS5 controller ₹69.</p>
+  </section>
+
+  <section id="games" style="position:relative;padding:clamp(64px,9vw,130px) clamp(20px,3vw,40px);background:var(--gg-bg2);border-top:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);overflow:hidden">
+    <div id="gg-games-bg" style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.22;pointer-events:none"></div>
+    <div style="position:relative;max-width:1400px;margin:0 auto">
+      <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(26px,3vw,40px)">
+        <div>
+          <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-neon);margin-bottom:14px">02 — OUR PS5 GAMES</div>
+          <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(28px,4.4vw,58px);margin:0 0 16px">PICK YOUR GAME</h2>
+          <p style="margin:0;font-family:var(--gg-num);font-weight:600;font-size:16px;letter-spacing:.16em;color:#B7B7C5">CHOOSE YOUR GAME. PLAY &amp; WIN.</p>
+        </div>
+        <div style="font-family:var(--gg-num);font-weight:700;font-size:15px;color:#B7B7C5">More titles at the counter</div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:clamp(22px,3vw,34px)">
+        <sc-for list="{{ categories }}" as="c" hint-placeholder-count="6">
+          <button onClick="{{ c.onClick }}" style="{{ c.style }}">{{ c.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:{{ gameCols }};gap:clamp(14px,1.4vw,22px)">
+        <sc-for list="{{ visibleGames }}" as="g" hint-placeholder-count="8">
+          <article style="background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-purple) 18%, transparent);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease" style-hover="transform:translateY(-6px);border-color:color-mix(in srgb, var(--gg-neon) 55%, transparent);box-shadow:0 22px 50px -28px color-mix(in srgb, var(--gg-purple) 90%, transparent)">
+            <div style="position:relative;aspect-ratio:3/4;background:var(--gg-bg2);overflow:hidden">
+              <img src="{{ g.art }}" alt="{{ g.title }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+              <div style="position:absolute;top:12px;right:12px;font-family:var(--gg-num);font-weight:700;font-size:10.5px;letter-spacing:.14em;padding:5px 9px;border-radius:6px;background:rgba(5,5,9,0.8);border:1px solid color-mix(in srgb, var(--gg-highlight) 40%, transparent);color:var(--gg-highlight);pointer-events:none">PS5</div>
+            </div>
+            <div style="padding:15px 16px 17px;display:grid;gap:7px">
+              <div style="font-family:var(--gg-head);font-weight:700;font-size:12.5px;line-height:1.35">{{ g.title }}</div>
+              <span style="font-family:var(--gg-num);font-weight:700;font-size:11.5px;letter-spacing:.16em;color:#B7B7C5">{{ g.genre }}</span>
+            </div>
+          </article>
+        </sc-for>
+        <div style="border:1px dashed color-mix(in srgb, var(--gg-purple) 35%, transparent);border-radius:16px;display:grid;place-items:center;padding:30px;text-align:center;min-height:200px">
+          <div>
+            <div style="font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--gg-neon);line-height:1.7">MORE GAMES<br>COMING SOON!</div>
+            <div style="font-size:12.5px;color:#6f6f80;margin-top:10px;line-height:1.5">We keep adding the latest<br>games for you to enjoy.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" style="position:relative;padding:clamp(64px,9vw,130px) clamp(20px,3vw,40px) clamp(40px,5vw,64px);background:var(--gg-bg2);border-top:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);overflow:hidden">
+    <div style="position:absolute;top:-30%;left:50%;width:70vw;height:70vw;transform:translateX(-50%);background:radial-gradient(circle,color-mix(in srgb, var(--gg-purple) 13%, transparent),transparent 60%);pointer-events:none"></div>
+    <div style="position:relative;max-width:1400px;margin:0 auto">
+      <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:clamp(30px,4vw,52px)">
+        <div>
+          <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-neon);margin-bottom:14px">03 — PRICING</div>
+          <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(28px,4.4vw,58px);margin:0">RATES &amp; OPENING OFFERS</h2>
+        </div>
+        <div style="font-family:var(--gg-num);font-weight:600;font-size:16px;color:#B7B7C5;max-width:34ch">All opening rates are managed from the admin panel — no code changes.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(16px,1.6vw,22px)">
+        <sc-for list="{{ offers }}" as="o" hint-placeholder-count="4">
+          <div data-reveal="1" style="opacity:0;transform:translateY(22px);transition:opacity .75s cubic-bezier(.2,.7,.3,1),transform .75s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease;background:linear-gradient(170deg,color-mix(in srgb, var(--gg-purple) 10%, transparent),rgba(17,17,26,0.9));border:1px solid color-mix(in srgb, var(--gg-purple) 24%, transparent);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:18px;overflow:hidden;position:relative" style-hover="border-color:var(--gg-neon);transform:translateY(-6px);box-shadow:0 26px 60px -32px color-mix(in srgb, var(--gg-purple) 90%, transparent)">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gg-neon),var(--gg-highlight),transparent);background-size:200% 100%;animation:ggSweep 4.5s linear infinite"></div>
+            <div style="font-family:var(--gg-head);font-size:12.5px;font-weight:700;letter-spacing:.12em;color:#fff;min-height:32px">{{ o.title }}</div>
+            <div>
+              <div style="font-family:var(--gg-num);font-weight:600;font-size:13px;letter-spacing:.16em;color:#B7B7C5;margin-bottom:4px">{{ o.label }}</div>
+              <div style="font-family:var(--gg-num);font-weight:700;font-size:clamp(34px,3.6vw,46px);line-height:1.05;color:#fff">{{ o.value }}</div>
+              <sc-if value="{{ o.standard }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:baseline;gap:9px;margin-top:8px">
+                  <span style="font-family:var(--gg-num);font-weight:600;font-size:12px;letter-spacing:.14em;color:#6f6f80">STANDARD</span>
+                  <span style="font-family:var(--gg-num);font-weight:700;font-size:19px;color:#6f6f80;text-decoration:line-through">{{ o.standard }}</span>
+                </div>
+              </sc-if>
+            </div>
+            <div style="margin-top:auto;padding-top:16px;border-top:1px solid color-mix(in srgb, var(--gg-purple) 18%, transparent);display:grid;gap:10px">
+              <div style="display:flex;justify-content:space-between;gap:10px">
+                <span style="font-family:var(--gg-num);font-weight:600;font-size:11px;letter-spacing:.16em;color:#6f6f80">OFFER STARTS</span>
+                <span style="font-family:var(--gg-num);font-weight:700;font-size:14px;color:#fff">{{ offerStart }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:10px">
+                <span style="font-family:var(--gg-num);font-weight:600;font-size:11px;letter-spacing:.16em;color:#6f6f80">OFFER ENDS</span>
+                <span style="font-family:var(--gg-num);font-weight:700;font-size:14px;color:var(--gg-neon)">{{ offerEnd }}</span>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div data-reveal="1" style="opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease;margin-top:clamp(28px,3.5vw,46px)">
+        <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;margin-bottom:clamp(20px,2.4vw,30px)">
+          <h3 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(20px,2.4vw,30px);margin:0">RULES &amp; REGULATIONS</h3>
+          <span style="font-family:var(--gg-num);font-weight:600;font-size:13px;letter-spacing:.18em;color:#6f6f80">PLEASE READ BEFORE BOOKING</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:clamp(14px,1.6vw,20px)">
+          <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+            <div style="background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-purple) 20%, transparent);border-radius:16px;padding:24px 22px;transition:transform .3s ease,border-color .3s ease" style-hover="transform:translateY(-4px);border-color:color-mix(in srgb, var(--gg-neon) 45%, transparent)">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+                <span style="font-family:var(--gg-num);font-weight:700;font-size:14px;color:#050509;background:linear-gradient(100deg,var(--gg-neon),var(--gg-highlight));width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none">{{ r.n }}</span>
+                <div style="font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.09em;line-height:1.4">{{ r.title }}</div>
+              </div>
+              <ul style="list-style:none;margin:0;padding:0;display:grid;gap:11px">
+                <sc-for list="{{ r.items }}" as="i" hint-placeholder-count="4">
+                  <li style="display:flex;gap:10px;font-size:13.5px;color:#B7B7C5;line-height:1.55">
+                    <span style="color:var(--gg-neon);font-family:var(--gg-num);font-weight:700;flex:none">/</span>{{ i }}
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showTournaments }}" hint-placeholder-val="{{ true }}">
+  <section id="tournaments" style="position:relative;padding:clamp(64px,9vw,130px) clamp(20px,3vw,40px);background:var(--gg-bg2);border-top:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);overflow:hidden">
+    <div id="gg-tournament-bg" style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:0.25;pointer-events:none"></div>
+    <div style="position:relative;max-width:1400px;margin:0 auto">
+      <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;margin-bottom:clamp(30px,4vw,52px)">
+        <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-neon);margin-bottom:14px">{{ nTournaments }} — GAMES GRID ARENA</div>
+        <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(28px,4.4vw,58px);margin:0 0 16px">COMPETE. CLIMB.<br>BECOME A LEGEND.</h2>
+      </div>
+      <sc-if value="{{ hasTourneys }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:clamp(16px,2vw,24px)">
+          <sc-for list="{{ liveTourneys }}" as="t" hint-placeholder-count="2">
+            <article data-reveal="1" style="opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease,border-color .3s ease;background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-purple) 24%, transparent);border-radius:18px;padding:clamp(20px,2.4vw,28px);display:flex;flex-direction:column;gap:18px" style-hover="border-color:color-mix(in srgb, var(--gg-neon) 55%, transparent);transform:translateY(-5px)">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div>
+                  <div style="font-family:var(--gg-num);font-weight:700;font-size:12px;letter-spacing:.18em;color:var(--gg-highlight);margin-bottom:8px">{{ t.game }}</div>
+                  <h3 style="font-family:var(--gg-head);font-weight:700;font-size:18px;margin:0;line-height:1.3">{{ t.name }}</h3>
+                </div>
+                <span style="{{ t.statusStyle }}">{{ t.status }}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px 12px;border-top:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);padding:18px 0">
+                <sc-for list="{{ t.meta }}" as="m" hint-placeholder-count="6">
+                  <div>
+                    <div style="font-family:var(--gg-num);font-weight:600;font-size:11px;letter-spacing:.16em;color:#6f6f80;margin-bottom:5px">{{ m.k }}</div>
+                    <div style="font-family:var(--gg-num);font-weight:700;font-size:17px;color:#fff">{{ m.v }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ t.hasRules }}" hint-placeholder-val="{{ false }}">
+                <ul style="list-style:none;margin:0;padding:0;display:grid;gap:9px">
+                  <sc-for list="{{ t.rules }}" as="r" hint-placeholder-count="3">
+                    <li style="display:flex;gap:10px;font-size:13.5px;color:#B7B7C5;line-height:1.55">
+                      <span style="color:var(--gg-neon);font-family:var(--gg-num);font-weight:700;flex:none">/</span>{{ r }}
+                    </li>
+                  </sc-for>
+                </ul>
+              </sc-if>
+              <a href="{{ whatsappHref }}" style="{{ t.ctaStyle }}">{{ t.cta }}</a>
+            </article>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ noTourneys }}" hint-placeholder-val="{{ true }}">
+      <div data-reveal="1" style="opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease;position:relative;overflow:hidden;background:linear-gradient(150deg,color-mix(in srgb, var(--gg-purple) 14%, transparent),color-mix(in srgb, var(--gg-blue) 8%, transparent) 55%,rgba(17,17,26,0.96));border:1px solid color-mix(in srgb, var(--gg-neon) 32%, transparent);border-radius:20px;padding:clamp(40px,6vw,90px) clamp(24px,4vw,64px);text-align:center">
+        <img src="./assets/lite/tournament-arena.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(1.1)" />
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,rgba(5,5,9,0.34) 0%,rgba(5,5,9,0.7) 58%,rgba(5,5,9,0.9) 100%);pointer-events:none"></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gg-neon),var(--gg-highlight),transparent);background-size:200% 100%;animation:ggSweep 4.5s linear infinite"></div>
+        <div style="position:relative;display:inline-flex;align-items:center;gap:10px;padding:9px 18px;border-radius:100px;border:1px solid color-mix(in srgb, var(--gg-highlight) 40%, transparent);background:rgba(5,5,9,0.5);margin-bottom:26px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--gg-highlight);box-shadow:0 0 10px var(--gg-highlight)"></span>
+          <span style="font-family:var(--gg-num);font-weight:700;font-size:11.5px;letter-spacing:.22em;color:var(--gg-highlight)">COMING SOON</span>
+        </div>
+        <h3 style="position:relative;font-family:var(--gg-head);font-weight:900;font-size:clamp(22px,3.4vw,44px);margin:0 0 20px;line-height:1.1;text-shadow:0 4px 34px rgba(5,5,9,0.9)">TOURNAMENTS<br>LAUNCHING SOON</h3>
+        <p style="position:relative;margin:0 auto 34px;font-size:clamp(14.5px,1.4vw,17px);color:#B7B7C5;line-height:1.65;max-width:52ch">PS5 Cricket Championship, Fastest Lap Challenge and squad showdowns. Dates, entry fees and prize pools will be announced here.</p>
+        <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:34px">
+          <sc-for list="{{ plannedEvents }}" as="p" hint-placeholder-count="3">
+            <span style="font-family:var(--gg-num);font-weight:700;font-size:13.5px;letter-spacing:.08em;color:#fff;padding:13px 20px;border-radius:11px;background:rgba(5,5,9,0.5);border:1px solid color-mix(in srgb, var(--gg-purple) 28%, transparent)">{{ p }}</span>
+          </sc-for>
+        </div>
+        <sc-if value="{{ hasContactLink }}" hint-placeholder-val="{{ true }}">
+        <a href="{{ whatsappHref }}" style="position:relative;display:inline-block;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.14em;color:#fff;padding:17px 32px;border-radius:12px;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue));box-shadow:0 14px 40px -16px color-mix(in srgb, var(--gg-purple) 95%, transparent)" style-hover="transform:translateY(-2px)">{{ notifyLabel }}</a>
+        </sc-if>
+      </div>
+      </sc-if>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ showMembership }}" hint-placeholder-val="{{ true }}">
+  <section id="membership" style="padding:clamp(64px,9vw,130px) clamp(20px,3vw,40px);max-width:1400px;margin:0 auto">
+    <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;margin-bottom:clamp(30px,4vw,52px)">
+      <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-highlight);margin-bottom:14px">{{ nMembership }} — MEMBERSHIP</div>
+      <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(28px,4.4vw,58px);margin:0 0 16px">LEVEL UP YOUR MEMBERSHIP</h2>
+      <p style="margin:0;font-family:var(--gg-num);font-weight:600;font-size:17px;letter-spacing:.14em;color:#B7B7C5">MORE PLAY. MORE REWARDS. MORE BENEFITS.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:clamp(16px,2vw,24px)">
+      <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+        <article style="{{ t.cardStyle }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+            <h3 style="font-family:var(--gg-head);font-weight:900;font-size:22px;margin:0;letter-spacing:.06em">{{ t.name }}</h3>
+            <sc-if value="{{ t.popular }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:var(--gg-num);font-weight:700;font-size:11px;letter-spacing:.14em;color:#050509;background:linear-gradient(100deg,var(--gg-neon),var(--gg-highlight));padding:6px 11px;border-radius:6px">MOST POPULAR</span>
+            </sc-if>
+          </div>
+          <div style="margin-bottom:8px;font-family:var(--gg-num);font-weight:700;font-size:clamp(32px,3.4vw,42px);line-height:1">{{ t.price }}</div>
+              <div style="font-family:var(--gg-num);font-weight:600;font-size:12px;letter-spacing:.14em;color:var(--gg-neon);margin-bottom:24px">{{ t.priceNote }}</div>
+          <ul style="list-style:none;margin:0 0 28px;padding:0;display:grid;gap:11px">
+            <sc-for list="{{ t.benefits }}" as="b" hint-placeholder-count="5">
+              <li style="display:flex;gap:10px;font-size:14px;color:#B7B7C5;line-height:1.5">
+                <span style="color:var(--gg-highlight);font-family:var(--gg-num);font-weight:700">+</span>{{ b }}
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ t.joinDisabled }}" hint-placeholder-val="{{ false }}">
+            <span style="{{ t.disabledStyle }}">{{ t.joinLabel }}</span>
+          </sc-if>
+          <sc-if value="{{ t.joinEnabled }}" hint-placeholder-val="{{ true }}">
+            <a href="{{ t.joinHref }}" style="{{ t.ctaStyle }}">{{ t.joinLabel }}</a>
+          </sc-if>
+        </article>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
+
+  <section style="padding:clamp(56px,7vw,110px) clamp(20px,3vw,40px) clamp(64px,9vw,120px);max-width:1400px;margin:0 auto">
+    <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;margin-bottom:clamp(30px,4vw,54px)">
+      <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-highlight);margin-bottom:14px">{{ nWhy }} — WHY US</div>
+      <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(28px,4.4vw,58px);margin:0">WHY GAMES GRID?</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(14px,1.6vw,20px)">
+      <sc-for list="{{ why }}" as="w" hint-placeholder-count="5">
+        <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-blue) 16%, transparent);border-radius:16px;padding:26px 22px;display:flex;flex-direction:column;gap:14px" style-hover="border-color:color-mix(in srgb, var(--gg-highlight) 50%, transparent)">
+          <span style="font-family:var(--gg-num);font-weight:700;font-size:15px;color:#050509;background:linear-gradient(100deg,var(--gg-neon),var(--gg-highlight));width:34px;height:34px;border-radius:9px;display:grid;place-items:center">{{ w.n }}</span>
+          <div style="font-family:var(--gg-head);font-size:12.5px;font-weight:700;letter-spacing:.09em;line-height:1.5">{{ w.title }}</div>
+          <div style="font-size:13.5px;color:#B7B7C5;line-height:1.55">{{ w.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="padding:clamp(64px,9vw,120px) clamp(20px,3vw,40px);background:var(--gg-bg2);border-top:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent)">
+    <div style="max-width:1400px;margin:0 auto">
+      <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;margin-bottom:clamp(26px,3vw,42px)">
+        <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-neon);margin-bottom:14px">{{ nGallery }} — GALLERY</div>
+        <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(28px,4.4vw,52px);margin:0">INSIDE GAMES GRID</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+        <sc-for list="{{ gallery }}" as="p" hint-placeholder-count="4">
+          <div style="position:relative;height:clamp(220px,24vw,300px);border-radius:16px;overflow:hidden;border:1px solid color-mix(in srgb, var(--gg-purple) 20%, transparent)">
+            <img src="{{ p.src }}" alt="{{ p.label }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+            <div style="position:absolute;left:14px;bottom:14px;font-family:var(--gg-head);font-size:11px;font-weight:700;letter-spacing:.12em;padding:8px 12px;border-radius:8px;background:rgba(5,5,9,0.78);border:1px solid color-mix(in srgb, var(--gg-purple) 30%, transparent);pointer-events:none">{{ p.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="padding:clamp(64px,9vw,120px) clamp(20px,3vw,40px);max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(20px,2.4vw,32px)">
+    <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease">
+      <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-highlight);margin-bottom:14px">{{ nReviews }} — REVIEWS</div>
+      <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(26px,3.6vw,46px);margin:0 0 20px">WHAT LEGENDS SAY</h2>
+      <p style="margin:0 0 28px;font-size:clamp(16px,1.6vw,21px);line-height:1.5;color:#B7B7C5;max-width:34ch">Your experience could be our next 5-star story.</p>
+      <p style="margin:-14px 0 26px;font-size:13.5px;color:#6f6f80;max-width:40ch;line-height:1.55">{{ reviewNote }}</p>
+      <a href="{{ reviewHref }}" target="_blank" rel="noopener" style="display:inline-block;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.14em;color:#fff;padding:16px 28px;border-radius:11px;border:1px solid color-mix(in srgb, var(--gg-purple) 45%, transparent);background:rgba(17,17,26,0.7)" style-hover="border-color:var(--gg-highlight);color:var(--gg-highlight)">LEAVE A GOOGLE REVIEW</a>
+    </div>
+    <div data-reveal="1" style="opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-purple) 22%, transparent);border-radius:20px;padding:clamp(26px,3vw,38px)">
+      <div style="font-family:var(--gg-num);font-weight:700;font-size:13px;letter-spacing:.3em;color:var(--gg-neon);margin-bottom:14px">{{ nLocation }} — LOCATION</div>
+      <h2 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(22px,2.6vw,32px);margin:0 0 24px;line-height:1.2">FIND YOUR WAY<br>TO GAMES GRID</h2>
+      <div style="display:grid;gap:18px;margin-bottom:28px">
+        <div>
+          <div style="font-family:var(--gg-num);font-weight:600;font-size:11.5px;letter-spacing:.18em;color:#6f6f80;margin-bottom:6px">LOCATION</div>
+          <div style="font-family:var(--gg-num);font-weight:700;font-size:20px">{{ locationText }}</div>
+        </div>
+        <div>
+          <div style="font-family:var(--gg-num);font-weight:600;font-size:11.5px;letter-spacing:.18em;color:#6f6f80;margin-bottom:6px">OPENING HOURS</div>
+          <div style="font-family:var(--gg-num);font-weight:700;font-size:20px">10:00 AM – 10:00 PM · Daily</div>
+        </div>
+      </div>
+      <a href="{{ directionsHref }}" style="display:inline-block;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.14em;color:#fff;padding:16px 28px;border-radius:11px;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue))" style-hover="transform:translateY(-2px)">GET DIRECTIONS</a>
+      
+    </div>
+  </section>
+
+  <section style="position:relative;overflow:hidden;border-top:1px solid color-mix(in srgb, var(--gg-purple) 20%, transparent)">
+    <div style="position:absolute;inset:0">
+      <img id="gg-final-cta" src="./assets/lite/final-cta.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+    </div>
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,5,9,0.96),rgba(5,5,9,0.6));pointer-events:none"></div>
+    <div style="position:relative;max-width:1400px;margin:0 auto;padding:clamp(70px,10vw,140px) clamp(20px,3vw,40px)">
+      <p style="font-family:var(--gg-num);font-weight:600;font-size:clamp(17px,1.8vw,22px);letter-spacing:.1em;color:#B7B7C5;margin:0 0 38px;line-height:1.6">BRING YOUR SQUAD.<br>PICK YOUR GAME.<br>MAKE YOUR LEGEND.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <sc-if value="{{ hasContactLink }}" hint-placeholder-val="{{ true }}"><a href="{{ whatsappHref }}" style="font-family:var(--gg-head);font-size:13px;font-weight:700;letter-spacing:.14em;color:#fff;padding:18px 34px;border-radius:12px;border:1px solid color-mix(in srgb, var(--gg-highlight) 50%, transparent);background:rgba(11,11,18,0.7);backdrop-filter:blur(6px)" style-hover="border-color:var(--gg-highlight);color:var(--gg-highlight)">{{ ctaContactLabel }}</a></sc-if>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background:var(--gg-bg2);border-top:1px solid color-mix(in srgb, var(--gg-purple) 18%, transparent);padding:clamp(48px,6vw,80px) clamp(20px,3vw,40px) 0">
+    <div style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:clamp(28px,3vw,48px);padding-bottom:clamp(36px,4vw,56px)">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <img src="./assets/gg-logo.png" alt="Games Grid" width="132" height="59" style="display:block;width:132px;height:auto">
+        <div style="font-family:var(--gg-head);font-weight:900;font-size:16px;letter-spacing:.16em">GAMES GRID</div>
+        <div style="font-family:var(--gg-num);font-weight:600;font-size:14px;letter-spacing:.22em;color:var(--gg-neon)">WHERE LEGENDS PLAY</div>
+        <p style="margin:8px 0 0;font-size:13.5px;color:#B7B7C5;line-height:1.6;max-width:30ch">PS5 gaming, racing simulators, private projector room and tournaments near Vignan College.</p>
+      </div>
+      <div>
+        <div style="font-family:var(--gg-head);font-size:11.5px;font-weight:700;letter-spacing:.16em;margin-bottom:18px">QUICK LINKS</div>
+        <div style="display:grid;gap:11px;font-size:14px">
+          <a href="#top" style="color:#B7B7C5">Home</a>
+          <a href="#experiences" style="color:#B7B7C5">Experiences</a>
+          <a href="#games" style="color:#B7B7C5">Games</a>
+          <a href="#pricing" style="color:#B7B7C5">Pricing</a>
+          <sc-if value="{{ showTournaments }}" hint-placeholder-val="{{ true }}"><a href="#tournaments" style="color:#B7B7C5">Tournaments</a></sc-if>
+          <sc-if value="{{ showMembership }}" hint-placeholder-val="{{ true }}"><a href="#membership" style="color:#B7B7C5">Membership</a></sc-if>
+          <a href="#contact" style="color:#B7B7C5">Contact</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--gg-head);font-size:11.5px;font-weight:700;letter-spacing:.16em;margin-bottom:18px">SUPPORT</div>
+        <div style="display:grid;gap:11px;font-size:14px">
+          <a href="./Games%20Grid%20Booking.dc.html" style="color:#B7B7C5">Booking</a>
+          <button onClick="{{ openRefund }}" style="justify-self:start;padding:0;border:none;background:none;cursor:pointer;font-family:var(--gg-body);font-size:14px;color:#B7B7C5;text-align:left" style-hover="color:var(--gg-highlight)">Cancellation &amp; Refund</button>
+          <button onClick="{{ openTerms }}" style="justify-self:start;padding:0;border:none;background:none;cursor:pointer;font-family:var(--gg-body);font-size:14px;color:#B7B7C5;text-align:left" style-hover="color:var(--gg-highlight)">Terms &amp; Conditions</button>
+          <button onClick="{{ openPrivacy }}" style="justify-self:start;padding:0;border:none;background:none;cursor:pointer;font-family:var(--gg-body);font-size:14px;color:#B7B7C5;text-align:left" style-hover="color:var(--gg-highlight)">Privacy Policy</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--gg-head);font-size:11.5px;font-weight:700;letter-spacing:.16em;margin-bottom:18px">CONTACT</div>
+        <div style="display:grid;gap:11px;font-size:14px;color:#B7B7C5">
+          <sc-for list="{{ contactLines }}" as="c" hint-placeholder-count="4">
+            <a href="{{ c.href }}" style="{{ c.style }}">{{ c.text }}</a>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px">
+          <sc-if value="{{ hasInstagram }}" hint-placeholder-val="{{ false }}"><a href="{{ instagramHref }}" target="_blank" rel="noopener" aria-label="Instagram" style="width:38px;height:38px;border-radius:10px;border:1px solid color-mix(in srgb, var(--gg-purple) 30%, transparent);display:grid;place-items:center;font-family:var(--gg-head);font-size:11px;color:#B7B7C5" style-hover="border-color:var(--gg-neon);color:#fff">IG</a></sc-if>
+          <sc-if value="{{ hasFacebook }}" hint-placeholder-val="{{ false }}"><a href="{{ facebookHref }}" target="_blank" rel="noopener" aria-label="Facebook" style="width:38px;height:38px;border-radius:10px;border:1px solid color-mix(in srgb, var(--gg-purple) 30%, transparent);display:grid;place-items:center;font-family:var(--gg-head);font-size:11px;color:#B7B7C5" style-hover="border-color:var(--gg-neon);color:#fff">FB</a></sc-if>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--gg-head);font-size:11.5px;font-weight:700;letter-spacing:.16em;margin-bottom:18px">NEWSLETTER</div>
+        <p style="margin:0 0 16px;font-size:13.5px;color:#B7B7C5;line-height:1.6">Stay updated with events, offers &amp; tournaments.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <input type="email" placeholder="your@email.com" style="padding:14px 16px;border-radius:10px;background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-purple) 28%, transparent);color:#fff;font-family:var(--gg-body);font-size:14px;outline:none" style-focus="border-color:var(--gg-highlight)">
+          <button style="padding:14px 16px;border-radius:10px;border:none;cursor:pointer;font-family:var(--gg-head);font-size:11.5px;font-weight:700;letter-spacing:.14em;color:#fff;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue))" style-hover="box-shadow:0 12px 30px -14px color-mix(in srgb, var(--gg-purple) 95%, transparent)">SUBSCRIBE</button>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1400px;margin:0 auto;border-top:1px solid color-mix(in srgb, var(--gg-purple) 14%, transparent);padding:22px 0 clamp(30px,5vw,90px);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:12.5px;color:#6f6f80">
+      <span>© 2026 Games Grid. All rights reserved.</span>
+      <span style="font-family:var(--gg-num);font-weight:600;letter-spacing:.18em">PS5 · RACING · PRIVATE ROOM · TOURNAMENTS</span>
+    </div>
+  </footer>
+
+  <sc-if value="{{ policyOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePolicy }}" style="position:fixed;inset:0;z-index:200;background:rgba(5,5,9,0.86);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,48px)">
+      <div onClick="{{ stopClose }}" style="position:relative;width:100%;max-width:680px;max-height:82vh;overflow-y:auto;background:linear-gradient(168deg,color-mix(in srgb, var(--gg-purple) 14%, transparent),rgba(17,17,26,0.99));border:1px solid color-mix(in srgb, var(--gg-neon) 40%, transparent);border-radius:20px;padding:clamp(24px,3.4vw,44px);box-shadow:0 40px 100px -50px color-mix(in srgb, var(--gg-purple) 90%, transparent)">
+        <button onClick="{{ closePolicy }}" aria-label="Close" style="position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:10px;border:1px solid color-mix(in srgb, var(--gg-purple) 35%, transparent);background:rgba(5,5,9,0.6);color:#B7B7C5;cursor:pointer;font-size:18px;line-height:1" style-hover="color:#fff;border-color:var(--gg-neon)">×</button>
+        <div style="font-family:var(--gg-num);font-weight:700;font-size:12px;letter-spacing:.26em;color:var(--gg-highlight);margin-bottom:12px">GAMES GRID</div>
+        <h3 style="font-family:var(--gg-head);font-weight:900;font-size:clamp(20px,2.6vw,30px);margin:0 0 10px;line-height:1.15;padding-right:44px">{{ policyTitle }}</h3>
+        <p style="margin:0 0 26px;font-size:12.5px;color:#6f6f80">Last updated {{ policyDate }}</p>
+        <div style="display:grid;gap:24px">
+          <sc-for list="{{ policyBlocks }}" as="b" hint-placeholder-count="4">
+            <div>
+              <div style="font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.09em;color:#fff;margin-bottom:12px">{{ b.heading }}</div>
+              <ul style="list-style:none;margin:0;padding:0;display:grid;gap:10px">
+                <sc-for list="{{ b.items }}" as="i" hint-placeholder-count="3">
+                  <li style="display:flex;gap:10px;font-size:14px;color:#B7B7C5;line-height:1.6">
+                    <span style="color:var(--gg-neon);font-family:var(--gg-num);font-weight:700;flex:none">/</span>{{ i }}
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin:28px 0 0;padding-top:20px;border-top:1px solid color-mix(in srgb, var(--gg-purple) 18%, transparent);font-size:12.5px;color:#6f6f80;line-height:1.6">Questions about this policy? Message us on WhatsApp and our team will help.</p>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasContactLink }}" hint-placeholder-val="{{ true }}">
+  <a href="{{ whatsappHref }}" data-fab="1" aria-label="{{ contactAria }}" style="position:fixed;right:18px;bottom:26px;z-index:70;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#1FA855;box-shadow:0 12px 30px -10px rgba(31,168,85,0.8);color:#fff" style-hover="transform:translateY(-2px)">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.13c-.24.68-1.42 1.31-1.96 1.36-.54.05-1.03.24-2.9-.62-2.24-1.03-3.65-3.4-3.76-3.55-.11-.16-.9-1.24-.9-2.37 0-1.13.6-1.68.81-1.91.21-.23.46-.29.62-.29.16 0 .32 0 .46.01.15.01.35-.06.54.42.19.48.66 1.65.72 1.77.06.12.1.26.02.42-.08.16-.31.5-.45.63-.14.13-.26.2-.1.44.16.24.72 1.14 1.51 1.84 1.01.9 1.7 1.12 1.94 1.24.24.12.38.1.52-.06.14-.16.6-.7.76-.94.16-.24.32-.19.54-.11.22.08 1.39.66 1.63.78.24.12.4.18.46.28.06.1.06.6-.18 1.28Z"></path></svg>
+  </a>
+  </sc-if>
+
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:0;right:0;bottom:0;z-index:65;display:flex;gap:10px;padding:12px 14px;background:rgba(5,5,9,0.94);backdrop-filter:blur(14px);border-top:1px solid color-mix(in srgb, var(--gg-purple) 28%, transparent)">
+      <a href="./Games%20Grid%20Booking.dc.html" style="flex:1;text-align:center;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff;padding:16px;border-radius:11px;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue))">BOOK NOW</a>
+      <sc-if value="{{ hasContactLink }}" hint-placeholder-val="{{ true }}"><a href="{{ whatsappHref }}" style="flex:1;text-align:center;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff;padding:16px;border-radius:11px;border:1px solid rgba(31,168,85,0.6);background:rgba(31,168,85,0.12)">{{ stickyContactLabel }}</a></sc-if>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const BOOK = "./Games%20Grid%20Booking.dc.html";
+const art = (key) => (window.GG_ART && window.GG_ART[key]) || "./assets/lite/" + key + ".jpg";
+
+// Titles whose bundled filename differs from a slug of the title. Used only
+// until real artwork is uploaded against the game in admin.
+// Shown only if the database is unreachable, so the section never renders empty.
+const FALLBACK_TIERS = [
+  { name: "GAMER", price_paise: null, duration_days: 30, popular: false,
+    benefits: ["Member pricing on PS5 hours", "Special offers on snacks & drinks", "Loyalty card stamps", "Event invites"] },
+  { name: "LEGEND", price_paise: null, duration_days: 30, popular: true,
+    benefits: ["Everything in Gamer", "Priority booking", "Birthday benefit", "Tournament priority entry", "Exclusive member offers"] },
+  { name: "ELITE", price_paise: null, duration_days: 30, popular: false,
+    benefits: ["Everything in Legend", "Best member rate on all experiences", "Private room priority slots", "Guaranteed tournament seat", "Dedicated support on WhatsApp"] }
+];
+
+const ART_ALIAS = {
+  "the-last-of-us-part-i": "tlou-part-i",
+  "the-last-of-us-part-ii-remastered": "tlou-part-ii",
+  "the-last-of-us-part-ii": "tlou-part-ii",
+  "marvel-s-spider-man-2": "spider-man-2",
+  "marvels-spider-man-2": "spider-man-2",
+  "ghost-of-y-tei": "ghost-of-yotei",
+  "call-of-duty-black-ops-7": "call-of-duty-black-ops-7"
+};
+const GAMES = [
+  { title: "The Crew Motorfest", genre: "RACING", file: "games/the-crew-motorfest" },
+  { title: "Gran Turismo 7", genre: "RACING", file: "games/gran-turismo-7" },
+  { title: "NBA 2K26", genre: "SPORTS", file: "games/nba-2k26" },
+  { title: "EA SPORTS FC 26", genre: "SPORTS", file: "games/ea-sports-fc-26" },
+  { title: "Cricket", genre: "SPORTS", file: "games/cricket" },
+  { title: "Call of Duty: Black Ops 7", genre: "SHOOTER", file: "games/call-of-duty-black-ops-7" },
+  { title: "Tekken 8", genre: "FIGHTING", file: "games/tekken-8" },
+  { title: "Red Dead Redemption", genre: "ADVENTURE", file: "games/red-dead-redemption" },
+  { title: "The Last of Us Part I", genre: "ADVENTURE", file: "games/tlou-part-i" },
+    { title: "The Last of Us Part II Remastered", genre: "ADVENTURE", file: "games/tlou-part-ii" },
+  { title: "Ghost of Tsushima", genre: "ADVENTURE", file: "games/ghost-of-tsushima" },
+  { title: "Ghost of Yōtei", genre: "ADVENTURE", file: "games/ghost-of-yotei" },
+  { title: "Uncharted", genre: "ADVENTURE", file: "games/uncharted" }
+];
+
+const CATS = ["ALL", "RACING", "SPORTS", "SHOOTER", "FIGHTING", "ADVENTURE"];
+
+const POLICIES = {
+  refund: {
+    title: "CANCELLATION & REFUND",
+    blocks: [
+      { heading: "OUR POLICY", items: [
+        "All bookings are final. Once payment is completed we do not offer cancellations or refunds.",
+        "This applies to PS5 sessions, racing simulators, the private projector room and tournament entries.",
+        "Gift vouchers cannot be exchanged for cash."
+      ] },
+      { heading: "RESCHEDULING", items: [
+        "We may move your booking to another available slot if you contact us on WhatsApp at least 4 hours before your slot.",
+        "Rescheduling is offered at our discretion and depends on availability. One reschedule per booking.",
+        "No-shows and late arrivals are treated as used sessions."
+      ] },
+      { heading: "IF WE CANNOT HOST YOU", items: [
+        "If equipment fails or we have to close, we will offer you another slot of the same value or a full refund.",
+        "Refunds in this case are processed to the original payment method within 7 working days.",
+        "If a session is interrupted by a technical fault, we extend your time or credit the unused portion."
+      ] },
+      { heading: "TOURNAMENTS", items: [
+        "Entry fees are non-refundable once registration closes.",
+        "If a tournament is cancelled by Games Grid, all entry fees are refunded in full."
+      ] }
+    ]
+  },
+  terms: {
+    title: "TERMS & CONDITIONS",
+    blocks: [
+      { heading: "BOOKINGS", items: [
+        "Bookings can be made online or at the counter, up to 30 days in advance.",
+        "PS5 and racing simulator sessions run from a minimum of 1 hour to a maximum of 5 hours.",
+        "One player per PS5 station and one driver per simulator. A second player on a PS5 requires an extra controller at ₹69 per hour.",
+        "The private projector room is booked in fixed 3-hour slots for a maximum of 5 people.",
+        "Your slot is held for 10 minutes while payment is completed. If payment is not completed the slot is released."
+      ] },
+      { heading: "ON THE PREMISES", items: [
+        "Please arrive 10 minutes before your slot. Sessions run to schedule and late arrival does not extend your time.",
+        "Sessions cannot be paused or split across the day.",
+        "Simulator seat and wheel settings are adjusted by our staff only.",
+        "Outside food, drinks, alcohol and smoking are not permitted inside.",
+        "Guests under 16 should be accompanied by an adult."
+      ] },
+      { heading: "EQUIPMENT & CONDUCT", items: [
+        "Any damage to consoles, controllers, wheels, screens, furniture or fittings will be charged to the customer.",
+        "Game titles available are subject to change and availability on the day.",
+        "We may refuse service or end a session for abusive behaviour, intoxication or misuse of equipment, without refund.",
+        "Games Grid is not responsible for personal belongings left on the premises."
+      ] },
+      { heading: "PRICING & OFFERS", items: [
+        "Prices, opening offers and membership benefits may change. The price shown at the time of booking is the price you pay.",
+        "Opening month offers apply only within the advertised dates and cannot be combined with other offers.",
+        "Loyalty stamps are recorded on your physical Games Grid card at the counter."
+      ] },
+      { heading: "HEALTH NOTE", items: [
+        "Racing simulators involve motion and force feedback and are not recommended for guests prone to motion sickness or with heart, back or neck conditions.",
+        "Please take regular breaks during long sessions."
+      ] }
+    ]
+  },
+  privacy: {
+    title: "PRIVACY POLICY",
+    blocks: [
+      { heading: "WHAT WE COLLECT", items: [
+        "Your name and mobile number when you make a booking.",
+        "Your email address if you choose to provide it.",
+        "Your booking history, payment records and loyalty activity.",
+        "Team and player details if you register for a tournament."
+      ] },
+      { heading: "HOW WE USE IT", items: [
+        "To confirm your booking and send reminders on WhatsApp and email.",
+        "To manage your loyalty stamps, membership and any credits on your account.",
+        "To contact you about your booking if something changes.",
+        "To send occasional offers and event news — you can ask us to stop at any time."
+      ] },
+      { heading: "WHAT WE DO NOT DO", items: [
+        "We never sell or rent your personal information to anyone.",
+        "We do not store your card or UPI details. Payments are handled by our payment provider.",
+        "We do not share your details with third parties except our payment and messaging providers, who need them to deliver the service."
+      ] },
+      { heading: "YOUR CHOICES", items: [
+        "You can ask us for a copy of the information we hold about you.",
+        "You can ask us to correct or delete your details, subject to records we must keep for accounting.",
+        "Message us on WhatsApp or email to make any of these requests."
+      ] }
+    ]
+  }
+};
+
+const STATUS_COLORS = {
+  "REGISTRATION OPEN": ["#0f2d1c", "#3ddc84"],
+  "ALMOST FULL": ["#2d2409", "#F6C244"],
+  "REGISTRATION CLOSED": ["#2d1013", "#FF5B6E"],
+  "LIVE NOW": ["#2a0f3d", "var(--gg-neon)"],
+  "COMPLETED": ["#16161f", "#B7B7C5"]
+};
+
+class Component extends DCLogic {
+  state = { cat: "ALL", menuOpen: false, width: 1440, policy: null, promos: [], promoIndex: 0, themeImages: {}, dbGames: null, promoMode: "fade", promoSpeed: 5, promoUnit: 0, promoRepeats: 2, plans: null, tourneys: null, visibility: {}, contact: {} };
+
+  componentDidMount() {
+    this._resize = () => {
+      const w = window.innerWidth;
+      const fab = document.querySelector("[data-fab]");
+      if (fab) fab.style.bottom = w < 1180 ? "96px" : "26px";
+      this.setState({ width: w, menuOpen: w >= 1180 ? false : this.state.menuOpen });
+      this.measureMarquee();
+    };
+    this._resize();
+    window.addEventListener("resize", this._resize);
+    this.loadPromos();
+    this.loadTheme();
+    let tries = 0;
+    this.loadGames();
+    this.loadSections();
+    this.loadContact();
+    const waitArt = () => {
+      if (window.GG_ART) { this.forceUpdate(); return; }
+      if (tries++ < 40) setTimeout(waitArt, 120);
+    };
+    waitArt();
+    this._io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = "1";
+          e.target.style.transform = "translateY(0)";
+          this._io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    setTimeout(() => {
+      document.querySelectorAll("[data-reveal]").forEach((el) => this._io.observe(el));
+    }, 60);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this._resize);
+    if (this._io) this._io.disconnect();
+    clearInterval(this._promoTimer);
+  }
+
+  applyTheme(map) {
+    const root = document.documentElement;
+    const vars = {
+      theme_purple: "--gg-purple", theme_blue: "--gg-blue",
+      theme_neon: "--gg-neon", theme_highlight: "--gg-highlight",
+      theme_bg: "--gg-bg", theme_bg2: "--gg-bg2", theme_card: "--gg-card"
+    };
+    Object.keys(vars).forEach((k) => {
+      if (map[k]) root.style.setProperty(vars[k], map[k]);
+    });
+    if (map.theme_bg) document.body.style.background = map.theme_bg;
+
+    const fonts = [];
+    if (map.theme_head_font) { root.style.setProperty("--gg-head", map.theme_head_font + ", sans-serif"); fonts.push(map.theme_head_font); }
+    if (map.theme_body_font) { root.style.setProperty("--gg-body", map.theme_body_font + ", system-ui, sans-serif"); fonts.push(map.theme_body_font); }
+    if (map.theme_num_font)  { root.style.setProperty("--gg-num", map.theme_num_font + ", sans-serif"); fonts.push(map.theme_num_font); }
+
+    const extra = fonts.filter((n) => ["Orbitron", "Inter", "Rajdhani"].indexOf(n) < 0);
+    if (extra.length) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?" +
+        extra.map((n) => "family=" + n.replace(/ /g, "+") + ":wght@400;600;700;900").join("&") + "&display=swap";
+      document.head.appendChild(link);
+    }
+
+    const imageSlots = { theme_hero_image: "gg-hero", theme_cta_image: "gg-final-cta" };
+    Object.keys(imageSlots).forEach((k) => {
+      if (!map[k]) return;
+      const el = document.getElementById(imageSlots[k]);
+      if (el) el.setAttribute("src", map[k]);
+    });
+
+    const backdrops = { theme_games_bg: "gg-games-bg", theme_tournament_bg: "gg-tournament-bg" };
+    Object.keys(backdrops).forEach((k) => {
+      if (!map[k]) return;
+      const el = document.getElementById(backdrops[k]);
+      if (el) el.style.backgroundImage = "url('" + map[k] + "')";
+    });
+
+    if (map.theme_header_logo) {
+      document.querySelectorAll("img[alt='Games Grid']").forEach((img) => { img.src = map.theme_header_logo; });
+    }
+
+    this.setState({
+      themeImages: {
+        ps5: map.theme_ps5_image || "",
+        sim: map.theme_sim_image || "",
+        room: map.theme_room_image || ""
+      }
+    });
+  }
+
+  loadTheme() {
+    if (!window.GG) return;
+    window.GG.select("settings", "select=key,value&key=like.theme_*")
+      .then((rows) => {
+        if (!rows || !rows.length) return;
+        const map = {};
+        rows.forEach((r) => { map[r.key] = typeof r.value === "string" ? r.value : String(r.value || ""); });
+        this.applyTheme(map);
+      })
+      .catch(() => {});
+  }
+
+  loadPromos() {
+    if (!window.GG) return;
+    // Read the display setting FIRST, so the rotation timer is built from the
+    // owner's saved speed rather than the default.
+    window.GG.select("settings", "select=value&key=eq.promo_display")
+      .catch(() => [])
+      .then((rows) => {
+        const v = (rows && rows[0] && rows[0].value) || {};
+        this.setState({
+          promoMode: v.mode || "fade",
+          promoSpeed: Number(v.speed) || 5
+        }, () => {
+          window.GG.select("promotions", "select=message,detail,accent&order=sort_order")
+            .then((list) => {
+              if (!list || !list.length) return;
+              this.setState({ promos: list }, () => this.startPromoTimer());
+            })
+            .catch(() => {});
+        });
+      });
+  }
+
+  // wa.me needs a full international number. A bare Indian 10-digit number,
+  // or one written with a leading 0, has to gain the 91 country code.
+  waNumber() {
+    let n = String((this.state.contact || {}).whatsapp_number || "").replace(/\D/g, "");
+    if (!n) return "";
+    if (n.length === 11 && n.charAt(0) === "0") n = n.slice(1);
+    if (n.length === 10) n = "91" + n;
+    return n;
+  }
+
+  // Turn whatever was typed in admin into a usable absolute URL. Handles a bare
+  // domain, an @handle, stray quotes, and values that already have a scheme.
+  webLink(raw, host) {
+    let v = String(raw || "").trim().replace(/^["'\s]+|["'\s]+$/g, "");
+    if (!v) return "";
+    if (/^https?:\/\//i.test(v)) return v;
+    if (v.charAt(0) === "@") return "https://" + host + "/" + v.slice(1);
+    if (v.indexOf(".") === -1) return "https://" + host + "/" + v;
+    return "https://" + v;
+  }
+
+  // No number saved means no WhatsApp link. Fall back to a phone call if we
+  // have one, so a button never claims to open a chat and just scrolls instead.
+  waHref(message) {
+    const n = this.waNumber();
+    if (n) return "https://wa.me/" + n + (message ? "?text=" + encodeURIComponent(message) : "");
+    const phone = String((this.state.contact || {}).contact_phone || "").replace(/[^\d+]/g, "");
+    return phone ? "tel:" + phone : "";
+  }
+
+  // Label that matches where the link actually goes.
+  contactVerb(waLabel, callLabel, offLabel) {
+    if (this.waNumber()) return waLabel;
+    const phone = String((this.state.contact || {}).contact_phone || "").replace(/[^\d+]/g, "");
+    return phone ? callLabel : offLabel;
+  }
+
+  // Contact details are admin-managed; fall back to a neutral note when unset.
+  loadContact() {
+    if (!window.GG) return;
+    window.GG.select("settings",
+      "select=key,value&key=in.(contact_phone,whatsapp_number,contact_email,address,google_review_url,instagram_url,facebook_url)")
+      .then((rows) => {
+        if (!rows || !rows.length) return;
+        const map = {};
+        rows.forEach((r) => {
+          const v = r.value;
+          map[r.key] = typeof v === "string" ? v : (v && (v.value || v.number || v.text)) || "";
+        });
+        this.setState({ contact: map });
+      })
+      .catch(() => {});
+  }
+
+  // One repeat unit must be a measured pixel width — a percentage can only ever
+  // match when the content happens to equal the bar width.
+  measureMarquee() {
+    const outer = this._promoOuter, track = this._promoTrack;
+    if (!outer || !track) return;
+    const unit = Math.round(track.getBoundingClientRect().width);
+    const barW = outer.clientWidth;
+    if (!unit || !barW) return;
+    const repeats = Math.ceil(barW / unit) + 1;
+    if (unit !== this.state.promoUnit || repeats !== this.state.promoRepeats) {
+      this.setState({ promoUnit: unit, promoRepeats: repeats });
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.state.promoMode === "scroll" && this.state.promos.length) {
+      clearTimeout(this._measureT);
+      this._measureT = setTimeout(() => this.measureMarquee(), 40);
+    }
+  }
+
+  startPromoTimer() {
+    clearInterval(this._promoTimer);
+    this._promoTimer = null;
+    // Only the fading mode needs a timer; the marquee is pure CSS.
+    const { promos, promoMode, promoSpeed } = this.state;
+    if (promoMode === "scroll" || promos.length < 2) return;
+    this._promoTimer = setInterval(() => {
+      this.setState((p) => ({ promoIndex: (p.promoIndex + 1) % p.promos.length }));
+    }, Math.max(2, promoSpeed) * 1000);
+  }
+
+  artKey(title) {
+    const base = this.slug(title).replace(/^gg-/, "");
+    return ART_ALIAS[base] || base;
+  }
+
+  slug(s) {
+    return "gg-" + s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  // The games grid is admin-managed. Fall back to the built-in list so the
+  // page still looks right offline or before the database is reachable.
+  // Membership tiers, published tournaments and which sections to show are all
+  // admin-managed. Silent failure keeps the page intact when offline.
+  async loadSections() {
+    if (!window.GG) return;
+    try {
+      const [plans, tourneys, vis] = await Promise.all([
+        window.GG.select("membership_plans", "select=*&active=eq.true&order=sort_order").catch(() => null),
+        window.GG.select("tournaments",
+          "select=*&status=in.(open,almost_full,closed,live)&order=starts_at.asc.nullslast").catch(() => null),
+        window.GG.select("settings", "select=value&key=eq.section_visibility").catch(() => null)
+      ]);
+      const next = {};
+      if (plans && plans.length) next.plans = plans;
+      if (tourneys) next.tourneys = tourneys;
+      if (vis && vis[0] && vis[0].value) next.visibility = vis[0].value;
+      if (Object.keys(next).length) this.setState(next);
+    } catch (err) { /* keep the built-in content */ }
+  }
+
+  async loadGames() {
+    if (!window.GG) return;
+    try {
+      const rows = await window.GG.select("games",
+        "select=title,genre,art_path&available=eq.true&order=sort_order,title");
+      if (rows && rows.length) {
+        this.setState({
+          dbGames: rows.map((r) => ({
+            title: r.title,
+            genre: (r.genre || "").toUpperCase(),
+            artUrl: r.art_path || null
+          }))
+        });
+      }
+    } catch (err) { /* keep the built-in list */ }
+  }
+
+  renderVals() {
+    const isMobile = this.state.width < 1180;
+    const catalogue = this.state.dbGames || GAMES;
+    const games = catalogue.filter((g) => this.state.cat === "ALL" || g.genre === this.state.cat);
+
+    const ACCENT = { purple: "var(--gg-neon)", blue: "var(--gg-highlight)", green: "#3ddc84", amber: "#F6C244" };
+    const promo = this.state.promos[this.state.promoIndex] || null;
+    const ti = this.state.themeImages || {};
+
+    return {
+      contactLines: (() => {
+        const c = this.state.contact || {};
+        const digits = (v) => String(v || "").replace(/[^\d+]/g, "");
+        const plain = "color:#B7B7C5;text-decoration:none";
+        const rows = [];
+        rows.push(c.contact_phone
+          ? { text: c.contact_phone, href: "tel:" + digits(c.contact_phone), style: plain }
+          : { text: "Phone — to be added", href: "#contact", style: plain });
+        rows.push(c.whatsapp_number
+          ? { text: "WhatsApp " + c.whatsapp_number, href: this.waHref(), style: plain }
+          : { text: "WhatsApp — to be added", href: "#contact", style: plain });
+        rows.push(c.contact_email
+          ? { text: c.contact_email, href: "mailto:" + c.contact_email, style: plain }
+          : { text: "Email — to be added", href: "#contact", style: plain });
+        rows.push({
+          text: c.address || "Near Vignan College",
+          href: c.address ? "https://maps.google.com/?q=" + encodeURIComponent(c.address) : "#contact",
+          style: plain
+        });
+        return rows;
+      })(),
+      whatsappHref: this.waHref(),
+      hasContactLink: !!this.waHref(),
+      hasInstagram: !!this.webLink((this.state.contact || {}).instagram_url, "instagram.com"),
+      instagramHref: this.webLink((this.state.contact || {}).instagram_url, "instagram.com"),
+      hasFacebook: !!this.webLink((this.state.contact || {}).facebook_url, "facebook.com"),
+      facebookHref: this.webLink((this.state.contact || {}).facebook_url, "facebook.com"),
+      contactAria: this.contactVerb("WhatsApp us", "Call us", "Contact us"),
+      ctaContactLabel: this.contactVerb("WHATSAPP US", "CALL US", "CONTACT US"),
+      stickyContactLabel: this.contactVerb("WHATSAPP", "CALL", "CONTACT"),
+      notifyLabel: this.contactVerb("NOTIFY ME ON WHATSAPP", "CALL TO REGISTER INTEREST", "ASK US FOR DATES"),
+      directionsHref: (() => {
+        const a = (this.state.contact || {}).address;
+        return a ? "https://maps.google.com/?q=" + encodeURIComponent(a) : "#contact";
+      })(),
+      locationText: (this.state.contact || {}).address || "Near Vignan College",
+      reviewHref: this.webLink((this.state.contact || {}).google_review_url, "g.page") || "#contact",
+      reviewNote: (this.state.contact || {}).google_review_url
+        ? "Reviews are posted on our Google listing, where anyone searching for us can read them."
+        : "Our Google listing goes live shortly — reviews will be posted there.",
+
+      promoOn: !!promo && this.state.promoMode !== "scroll",
+      promoScrollOn: !!promo && this.state.promoMode === "scroll",
+      promoMarqueeOuter: "display:flex;overflow:hidden;padding:11px 0;background:var(--gg-bg2);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 18%, transparent);color:" +
+        (ACCENT[(promo && promo.accent) || "purple"] || ACCENT.purple),
+      // The repeat unit is the natural width of one copy, measured in px, so
+      // the loop is seamless whether the content is wider or narrower than the bar.
+      promoOuterRef: (el) => { this._promoOuter = el; },
+      promoMarqueeInner: "display:flex;align-items:center;flex:none;" +
+        (this.state.promoUnit
+          ? "--gg-unit:" + this.state.promoUnit + "px;animation:ggMarquee " +
+            Math.max(6, (this.state.promoSpeed || 5) * Math.max(1, this.state.promos.length)) + "s linear infinite;"
+          : ""),
+      promoTracks: (() => {
+        const items = this.state.promos.map((p) => ({ message: p.message, detail: p.detail || "" }));
+        if (!items.length) return [];
+        const copies = Math.max(2, this.state.promoRepeats || 2);
+        return Array.from({ length: copies }, (_, i) => ({
+          items,
+          ref: i === 0 ? (el) => { this._promoTrack = el; } : null
+        }));
+      })(),
+      promoMessage: promo ? promo.message : "",
+      promoDetail: promo ? (promo.detail || "") : "",
+      promoBarStyle: "display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:11px 20px;text-align:center;background:var(--gg-bg2);border-bottom:1px solid color-mix(in srgb, var(--gg-purple) 25%, transparent);color:" +
+        (promo ? (ACCENT[promo.accent] || ACCENT.purple) : "var(--gg-neon)"),
+
+      isMobile,
+      isDesktop: !isMobile,
+      menuOpen: this.state.menuOpen && isMobile,
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+
+      particles: [12, 28, 44, 61, 77, 88].map((left, i) => ({
+        style: `position:absolute;left:${left}%;bottom:${8 + i * 9}%;width:${i % 2 ? 3 : 4}px;height:${i % 2 ? 3 : 4}px;border-radius:50%;background:${i % 2 ? "var(--gg-highlight)" : "var(--gg-neon)"};box-shadow:0 0 12px ${i % 2 ? "var(--gg-highlight)" : "var(--gg-neon)"};pointer-events:none;animation:ggFloat ${14 + i * 3}s ease-in-out ${i * 1.6}s infinite`
+      })),
+
+      strip: [
+        { mark: "01", title: "NEXT-GEN SETUP", sub: "High-performance gaming" },
+        { mark: "02", title: "PREMIUM LOUNGE", sub: "Comfort. Ambience. Vibes." },
+        { mark: "03", title: "UNBEATABLE EXPERIENCE", sub: "Play more. Feel more." },
+        { mark: "04", title: "EVENTS & TOURNAMENTS", sub: "Compete & win prizes" }
+      ],
+
+      experiences: [
+        {
+          name: "PS5 GAMING", badge: "7 CONSOLES", slot: "gg-exp-ps5", src: ti.ps5 || art("exp-ps5"), href: BOOK + "#ps5",
+          slotHint: "PS5 station render — 4 seats, large display, purple rim light",
+          desc: "Grab your controller.\nBring your squad.\nLet the games begin.",
+          price: "₹99/hr", was: "₹129/hr", cta: "BOOK PS5",
+          features: ["7 PS5 stations", "Multiplayer gaming", "Premium controllers", "Large displays", "Multiple game titles"]
+        },
+        {
+          name: "CAR RACING SIMULATORS", badge: "2 SIMULATORS", slot: "gg-exp-sim", src: ti.sim || art("exp-sim"), href: BOOK + "#sim",
+          slotHint: "Racing rig render — wheel, pedals, triple screen, blue light",
+          desc: "Feel every turn.\nChase the fastest lap.",
+          price: "₹129/hr", was: "₹149/hr", cta: "BOOK SIMULATOR",
+          features: ["2 racing simulators", "Racing wheels", "Pedals", "Racing games", "Competitive lap times"]
+        },
+        {
+          name: "PRIVATE PROJECTOR ROOM", badge: "UP TO 5 PEOPLE", slot: "gg-exp-room", src: ti.room || art("projector-room"), href: BOOK + "#room",
+          slotHint: "Projector room render — 110\" screen, sofa, bean bags",
+          desc: "Your squad. Your screen.\nYour night.",
+          price: "₹1,299", was: "₹1,499", cta: "BOOK PRIVATE ROOM",
+          features: ["110-inch screen + soundbar", "PS5 games, movies & OTT", "Sofa and bean bags", "Drinks × 5, popcorn × 5", "3-hour fixed slots"]
+        }
+      ],
+
+      offers: [
+        { title: "PS5 GAMING", label: "OPENING PRICE", value: "₹99/hr", standard: "₹129/hr" },
+        { title: "RACING SIMULATOR", label: "OPENING PRICE", value: "₹129/hr", standard: "₹149/hr" },
+        { title: "PRIVATE PROJECTOR ROOM", label: "3 HOURS · UP TO 5", value: "₹1,299", standard: "₹1,499" },
+        { title: "PS5 + RACING COMBO", label: "COMBO OFFER", value: "SAVE 20%", standard: false }
+      ],
+      offerStart: "1 SEP 2026",
+      offerEnd: "30 SEP 2026",
+
+      rules: [
+        {
+          n: "01", title: "PS5 GAMING",
+          items: [
+            "Minimum booking 1 hour, maximum 5 hours",
+            "Pre-booking available online or at the counter",
+            "One player per station",
+            "A second player needs an extra controller at ₹69 per hour",
+            "Game titles subject to availability on the day"
+          ]
+        },
+        {
+          n: "02", title: "CAR RACING SIMULATOR",
+          items: [
+            "Minimum booking 1 hour, maximum 5 hours",
+            "Pre-booking available online or at the counter",
+            "One driver per simulator",
+            "Seat and wheel settings are adjusted by staff only",
+            "Not recommended for guests prone to motion sickness"
+          ]
+        },
+        {
+          n: "03", title: "PRIVATE PROJECTOR ROOM",
+          items: [
+            "Maximum 5 people per booking",
+            "Fixed 3-hour slots only",
+            "Pre-booking available and recommended",
+            "Includes 5 drinks and 5 popcorn",
+            "Outside food and drinks are not permitted"
+          ]
+        },
+        {
+          n: "04", title: "GENERAL & PAYMENT",
+          items: [
+            "No cancellation and no refund once a booking is paid",
+            "Please arrive 10 minutes before your slot; late arrival is not extended",
+            "Time slots run to schedule and cannot be paused",
+            "Damage to equipment will be charged to the customer",
+            "Under-16 guests should be accompanied by an adult",
+            "Smoking, alcohol and outside food are not allowed inside",
+            "Management reserves the right to refuse service for misconduct"
+          ]
+        }
+      ],
+
+      why: [
+        { n: "01", title: "TOP-NOTCH EQUIPMENT", sub: "Premium gaming setup, maintained daily" },
+        { n: "02", title: "CLEAN & SAFE ENVIRONMENT", sub: "Sanitised stations and controllers" },
+        { n: "03", title: "FRIENDLY STAFF", sub: "Help with setup, games and squads" },
+        { n: "04", title: "FOOD & BEVERAGES", sub: "Snacks and drinks available on site" },
+        { n: "05", title: "AMPLE PARKING SPACE", sub: "Bring the squad, park with ease" }
+      ],
+
+      categories: CATS.map((c) => {
+        const active = this.state.cat === c;
+        return {
+          label: c,
+          onClick: () => this.setState({ cat: c }),
+          style: `font-family:var(--gg-head);font-size:11px;font-weight:700;letter-spacing:.14em;padding:12px 18px;border-radius:10px;cursor:pointer;transition:all .25s ease;color:${active ? "#fff" : "#B7B7C5"};background:${active ? "linear-gradient(100deg,var(--gg-purple),var(--gg-blue))" : "rgba(17,17,26,0.9)"};border:1px solid ${active ? "transparent" : "color-mix(in srgb, var(--gg-purple) 25%, transparent)"}`
+        };
+      }),
+      gameCols: this.state.width < 700 ? "repeat(2,1fr)" : this.state.width < 1100 ? "repeat(3,1fr)" : "repeat(4,1fr)",
+      visibleGames: games.map((g) => ({
+        ...g,
+        slot: this.slug(g.title),
+        art: g.artUrl || art(g.file || "games/" + this.artKey(g.title))
+      })),
+      gameCount: catalogue.length,
+
+      roomFeatures: ['110" Screen', "Soundbar", "PS5", "Movies / OTT", "Sofa", "Bean Bags", "Drinks × 5", "Popcorn × 5"],
+
+      plannedEvents: ["PS5 Cricket Championship", "Fastest Lap Challenge", "Squad Showdown"],
+
+      policyOpen: !!this.state.policy,
+      policyTitle: this.state.policy ? POLICIES[this.state.policy].title : "",
+      policyBlocks: this.state.policy ? POLICIES[this.state.policy].blocks : [],
+      policyDate: "August 2026",
+      openRefund: () => this.setState({ policy: "refund" }),
+      openTerms: () => this.setState({ policy: "terms" }),
+      openPrivacy: () => this.setState({ policy: "privacy" }),
+      closePolicy: () => this.setState({ policy: null }),
+      stopClose: (ev) => ev.stopPropagation(),
+
+      showMembership: this.state.visibility.membership !== false,
+      showTournaments: this.state.visibility.tournaments !== false,
+
+      // Eyebrow numbers stay in sequence when a section is hidden.
+      ...(() => {
+        const onT = this.state.visibility.tournaments !== false;
+        const onM = this.state.visibility.membership !== false;
+        let n = 3; // 01 experiences, 02 games, 03 pricing are always shown
+        const pad2 = (v) => "0" + v;
+        const out = {};
+        if (onT) out.nTournaments = pad2(++n); else out.nTournaments = "04";
+        if (onM) out.nMembership = pad2(++n); else out.nMembership = "05";
+        out.nWhy = pad2(++n);
+        out.nGallery = pad2(++n);
+        out.nReviews = pad2(++n);
+        out.nLocation = pad2(++n);
+        return out;
+      })(),
+
+      tiers: (this.state.plans || FALLBACK_TIERS).map((p) => ({
+        name: p.name,
+        price: p.price_paise ? "₹" + Math.round(p.price_paise / 100).toLocaleString("en-IN") : "₹—",
+        priceNote: p.price_paise
+          ? (p.duration_days === 30 ? "PER MONTH" : "FOR " + p.duration_days + " DAYS")
+          : "PRICING TO BE CONFIRMED",
+        popular: !!p.popular,
+        cardStyle: this.tierCard(!!p.popular),
+        ctaStyle: this.tierCta(!!p.popular),
+        benefits: p.benefits || [],
+        joinLabel: p.price_paise ? "JOIN NOW" : "COMING SOON",
+        joinDisabled: !p.price_paise,
+        joinEnabled: !!p.price_paise,
+        disabledStyle: "margin-top:auto;text-align:center;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.14em;color:#6f6f80;padding:16px;border-radius:11px;border:1px dashed color-mix(in srgb, var(--gg-purple) 30%, transparent);cursor:default",
+        joinHref: "./Games%20Grid%20Account.dc.html?plan=" + encodeURIComponent(p.name)
+      })),
+
+      hasTourneys: (this.state.tourneys || []).length > 0,
+      noTourneys: (this.state.tourneys || []).length === 0,
+      liveTourneys: (this.state.tourneys || []).map((t) => {
+        const label = {
+          open: "REGISTRATION OPEN", almost_full: "ALMOST FULL", closed: "REGISTRATION CLOSED",
+          live: "LIVE NOW", completed: "COMPLETED"
+        }[t.status] || "ANNOUNCED";
+        const tint = {
+          "REGISTRATION OPEN": ["#0f2d1c", "#3ddc84"],
+          "ALMOST FULL": ["#2d2409", "#F6C244"],
+          "REGISTRATION CLOSED": ["#2d1013", "#FF5B6E"],
+          "LIVE NOW": ["#2a0f3d", "#B026FF"],
+          COMPLETED: ["#16161f", "#B7B7C5"],
+          ANNOUNCED: ["#16161f", "#B7B7C5"]
+        }[label];
+        const when = t.starts_at ? new Date(t.starts_at) : null;
+        const fmt = (opts) => when
+          ? new Intl.DateTimeFormat("en-IN", Object.assign({ timeZone: "Asia/Kolkata" }, opts)).format(when)
+          : "TBA";
+        const registrable = t.status === "open" || t.status === "almost_full";
+        return {
+          name: t.name,
+          game: t.game + (t.format ? " · " + t.format : ""),
+          status: label,
+          statusStyle: "flex:none;font-family:var(--gg-num);font-weight:700;font-size:10.5px;letter-spacing:.12em;padding:7px 11px;border-radius:7px;white-space:nowrap;background:" +
+            tint[0] + ";color:" + tint[1] + ";border:1px solid " + tint[1] + "44",
+          meta: [
+            { k: "DATE", v: fmt({ day: "numeric", month: "short" }) },
+            { k: "TIME", v: when ? fmt({ hour: "numeric", minute: "2-digit" }) : "TBA" },
+            { k: t.team_size > 1 ? "TEAM SIZE" : "FORMAT", v: t.team_size > 1 ? t.team_size + " players" : (t.format || "Individual") },
+            { k: "ENTRY FEE", v: t.entry_fee_paise ? "₹" + Math.round(t.entry_fee_paise / 100).toLocaleString("en-IN") : "Free" },
+            { k: "PRIZE", v: t.prize_text || "TBA" },
+            { k: t.team_size > 1 ? "MAX TEAMS" : "SLOTS", v: t.max_entries ? String(t.max_entries) : "TBA" }
+          ],
+          hasRules: !!(t.rules && t.rules.trim()),
+          rules: (t.rules || "").split("\n").map((l) => l.trim()).filter(Boolean),
+          cta: registrable
+            ? this.contactVerb("REGISTER ON WHATSAPP", "CALL TO REGISTER", "REGISTRATION OPENS SOON")
+            : this.contactVerb("ASK US ON WHATSAPP", "CALL TO ASK", "DETAILS COMING SOON"),
+          ctaStyle: "margin-top:auto;display:block;text-align:center;font-family:var(--gg-head);font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#fff;padding:15px;border-radius:11px;" +
+            (registrable
+              ? "background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue));"
+              : "border:1px solid color-mix(in srgb, var(--gg-purple) 34%, transparent);")
+        };
+      }),
+
+      _stamps: Array.from({ length: 10 }, (_, i) => ({
+        n: i === 9 ? "FREE" : String(i + 1),
+        style: `width:${i === 9 ? "58px" : "38px"};height:38px;border-radius:9px;display:grid;place-items:center;font-family:var(--gg-num);font-weight:700;font-size:${i === 9 ? "11px" : "15px"};letter-spacing:${i === 9 ? ".1em" : "0"};${i === 9 ? "color:#050509;background:linear-gradient(100deg,var(--gg-neon),var(--gg-highlight))" : "color:#B7B7C5;background:rgba(5,5,9,0.55);border:1px solid color-mix(in srgb, var(--gg-purple) 22%, transparent)"}`
+      })),
+
+      gallery: [
+        { slot: "gg-gal-ps5", label: "PS5 ROOM", hint: "PS5 room photo", src: art("gal-ps5") },
+        { slot: "gg-gal-sim", label: "RACING SIMULATOR", hint: "Simulator room photo", src: art("gal-sim") },
+        { slot: "gg-gal-room", label: "PROJECTOR ROOM", hint: "Projector room photo", src: art("gal-room") },
+        { slot: "gg-gal-shop", label: "SNACKS & SHOP", hint: "Snacks / counter photo", src: art("gal-shop") }
+      ]
+    };
+  }
+
+  statusStyle(status) {
+    const [bg, fg] = STATUS_COLORS[status] || STATUS_COLORS.COMPLETED;
+    return `flex:none;font-family:var(--gg-num);font-weight:700;font-size:10.5px;letter-spacing:.12em;padding:7px 11px;border-radius:7px;background:${bg};color:${fg};border:1px solid ${fg}44;white-space:nowrap`;
+  }
+
+  tierCard(popular) {
+    return popular
+      ? "position:relative;background:linear-gradient(165deg,color-mix(in srgb, var(--gg-purple) 18%, transparent),rgba(17,17,26,0.98));border:1px solid color-mix(in srgb, var(--gg-neon) 60%, transparent);border-radius:20px;padding:clamp(26px,3vw,36px);display:flex;flex-direction:column;box-shadow:0 30px 70px -40px color-mix(in srgb, var(--gg-purple) 95%, transparent)"
+      : "position:relative;background:var(--gg-card);border:1px solid color-mix(in srgb, var(--gg-purple) 20%, transparent);border-radius:20px;padding:clamp(26px,3vw,36px);display:flex;flex-direction:column";
+  }
+
+  tierCta(popular) {
+    return popular
+      ? "margin-top:auto;text-align:center;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.14em;color:#fff;padding:16px;border-radius:11px;background:linear-gradient(100deg,var(--gg-purple),var(--gg-blue))"
+      : "margin-top:auto;text-align:center;font-family:var(--gg-head);font-size:12px;font-weight:700;letter-spacing:.14em;color:#fff;padding:16px;border-radius:11px;border:1px solid color-mix(in srgb, var(--gg-purple) 40%, transparent)";
+  }
+}
+
+</script>
+</body>
+</html>

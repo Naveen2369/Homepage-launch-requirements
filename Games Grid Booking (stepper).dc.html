@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Book Your Slot | Games Grid</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #050509; }
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #00A8FF; text-decoration: none; }
+  a:hover { color: #B026FF; }
+  ::selection { background: #8B2CFF; color: #fff; }
+  input, select, button { font-family: inherit; }
+  @keyframes ggPulse { 0%,100% { opacity: .45; } 50% { opacity: .9; } }
+</style>
+</helmet>
+
+<div style="background:#050509;color:#fff;min-height:100vh">
+
+  <header style="position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(5,5,9,0.72);border-bottom:1px solid rgba(139,44,255,0.18)">
+    <div style="max-width:1400px;margin:0 auto;padding:10px clamp(16px,3vw,40px);display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <a href="./Games%20Grid%20Home.dc.html" style="display:flex;align-items:center;gap:12px;color:#fff">
+        <img src="./assets/gg-logo.png" alt="Games Grid" width="150" height="67" style="display:block;width:clamp(120px,11vw,150px);height:auto" />
+      </a>
+
+      <a href="./Games%20Grid%20Home.dc.html" style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;color:#B7B7C5;padding:12px 18px;border-radius:10px;border:1px solid rgba(139,44,255,0.28);white-space:nowrap" style-hover="color:#00A8FF;border-color:#00A8FF">BACK TO SITE</a>
+    </div>
+  </header>
+
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,3vw,40px) 120px">
+
+    <div style="margin-bottom:clamp(24px,3vw,40px)">
+      <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.3em;color:#00A8FF;margin-bottom:12px">BOOKING</div>
+      <h1 style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(28px,4.4vw,52px);margin:0">{{ pageTitle }}</h1>
+      <sc-if value="{{ lockedExp }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:18px;padding:16px 20px;border-radius:14px;background:linear-gradient(120deg,rgba(139,44,255,0.14),rgba(17,17,26,0.9));border:1px solid rgba(176,38,255,0.35)">
+          <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:26px;line-height:1">{{ lockedRate }}</span>
+          <span style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:14px;letter-spacing:.08em;color:#B7B7C5">{{ lockedUnits }}</span>
+          <span style="width:1px;height:18px;background:rgba(139,44,255,0.35)"></span>
+          <span style="font-size:13.5px;color:#B7B7C5">{{ playerNote }}</span>
+          <a href="./Games%20Grid%20Booking.dc.html" style="margin-left:auto;font-family:Orbitron,sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.12em;color:#B7B7C5;padding:10px 14px;border-radius:9px;border:1px solid rgba(139,44,255,0.3)" style-hover="color:#00A8FF;border-color:#00A8FF">CHANGE EXPERIENCE</a>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(24px,3vw,38px)">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+        <div style="{{ s.style }}">
+          <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;opacity:.7">{{ s.n }}</span>
+          <span style="font-family:Orbitron,sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em">{{ s.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ showRoomHero }}" hint-placeholder-val="{{ false }}">
+      <section style="margin-bottom:clamp(22px,3vw,36px);border-radius:20px;overflow:hidden;border:1px solid rgba(139,44,255,0.28);background:#11111A">
+        <div style="position:relative;min-height:clamp(220px,26vw,330px)">
+          <image-slot id="gg-book-room" shape="rect" fit="cover" src="./assets/projector-room.png" style="position:absolute;inset:0" placeholder="Projector room render"></image-slot>
+          <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(5,5,9,0.94),rgba(5,5,9,0.35));pointer-events:none"></div>
+          <div style="position:relative;padding:clamp(24px,3vw,42px);max-width:600px">
+            <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:12px;letter-spacing:.26em;color:#00A8FF;margin-bottom:14px">YOUR PRIVATE GAME NIGHT</div>
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(22px,3vw,38px);margin:0 0 14px;line-height:1.1">YOUR SQUAD.<br />YOUR SCREEN.<br />YOUR NIGHT.</h2>
+            <p style="margin:0;font-size:14.5px;color:#B7B7C5;line-height:1.6;max-width:40ch">A 110-inch screen, soundbar and the room to yourselves for three hours. Drinks and popcorn for five included.</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;background:rgba(139,44,255,0.16)">
+          <sc-for list="{{ roomFeatures }}" as="r" hint-placeholder-count="8">
+            <div style="padding:16px 14px;background:#11111A;font-family:Rajdhani,sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.06em;color:#fff;text-align:center">{{ r }}</div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <div style="display:grid;grid-template-columns:{{ gridCols }};gap:clamp(18px,2.4vw,30px);align-items:start">
+
+      <div style="display:grid;gap:clamp(16px,2vw,22px)">
+
+        <sc-if value="{{ showExperience }}" hint-placeholder-val="{{ true }}">
+          <section style="background:#11111A;border:1px solid rgba(139,44,255,0.2);border-radius:18px;padding:clamp(20px,2.4vw,30px)">
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;margin:0 0 20px">CHOOSE YOUR EXPERIENCE</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+              <sc-for list="{{ experienceOptions }}" as="e" hint-placeholder-count="3">
+                <button onClick="{{ e.onClick }}" style="{{ e.style }}">
+                  <span style="font-family:Orbitron,sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.08em;line-height:1.4;text-align:left">{{ e.name }}</span>
+                  <span style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:.1em;color:#B7B7C5;text-align:left">{{ e.units }}</span>
+                  <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:26px;line-height:1;margin-top:6px">{{ e.rate }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showSchedule }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#11111A;border:1px solid rgba(139,44,255,0.2);border-radius:18px;padding:clamp(20px,2.4vw,30px)">
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;margin:0 0 8px">PICK DATE &amp; TIME</h2>
+            <p style="margin:0 0 20px;font-size:13.5px;color:#6f6f80">Bookings open 30 days ahead. Past dates are disabled.</p>
+
+            <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.18em;color:#B7B7C5;margin-bottom:10px">DATE</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin-bottom:14px">
+              <sc-for list="{{ quickDates }}" as="d" hint-placeholder-count="5">
+                <button onClick="{{ d.onClick }}" style="{{ d.style }}">
+                  <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em">{{ d.top }}</span>
+                  <span style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:12px;opacity:.75">{{ d.bottom }}</span>
+                </button>
+              </sc-for>
+              <button onClick="{{ openCal }}" style="{{ calButtonStyle }}">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+                <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em">PICK DATE</span>
+              </button>
+            </div>
+            <sc-if value="{{ otherDate }}" hint-placeholder-val="{{ false }}">
+              <div style="display:inline-flex;align-items:center;gap:10px;padding:10px 15px;border-radius:10px;background:rgba(139,44,255,0.14);border:1px solid rgba(176,38,255,0.45);margin-bottom:14px">
+                <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:15px">{{ otherDate }}</span>
+                <span style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.14em;color:#B026FF">SELECTED</span>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ calOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:4px 0 20px;padding:14px;border-radius:13px;background:rgba(5,5,9,0.72);border:1px solid rgba(139,44,255,0.3);max-width:300px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
+                  <button onClick="{{ prevMonth }}" disabled="{{ prevDisabled }}" style="{{ navStyle }}">‹</button>
+                  <span style="font-family:Orbitron,sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.08em">{{ calTitle }}</span>
+                  <button onClick="{{ nextMonth }}" disabled="{{ nextMonthDisabled }}" style="{{ navStyle }}">›</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px">
+                  <sc-for list="{{ dowLabels }}" as="w" hint-placeholder-count="7">
+                    <span style="text-align:center;font-family:Rajdhani,sans-serif;font-weight:700;font-size:9.5px;color:#6f6f80;padding:2px 0">{{ w }}</span>
+                  </sc-for>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+                  <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="35">
+                    <button onClick="{{ c.onClick }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <div style="height:8px"></div>
+
+            <sc-if value="{{ isHourly }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;gap:22px">
+                <div>
+                  <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.18em;color:#B7B7C5;margin-bottom:10px">DURATION</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    <sc-for list="{{ durations }}" as="u" hint-placeholder-count="5">
+                      <button onClick="{{ u.onClick }}" style="{{ u.style }}">{{ u.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <div>
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:12px">
+                    <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.18em;color:#B7B7C5">START TIME</div>
+                    <div style="display:flex;gap:14px;font-family:Rajdhani,sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.1em;color:#6f6f80">
+                      <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:3px;background:#3ddc84"></span>AVAILABLE</span>
+                      <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:3px;background:#FF5B6E"></span>BOOKED</span>
+                    </div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px">
+                    <sc-for list="{{ timeSlots }}" as="t" hint-placeholder-count="15">
+                      <button onClick="{{ t.onClick }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button>
+                    </sc-for>
+                  </div>
+                  <p style="margin:12px 0 0;font-size:12.5px;color:#6f6f80">Times shown fit your full {{ durationText }} without a break.</p>
+                </div>
+
+                <sc-if value="{{ showUnits }}" hint-placeholder-val="{{ false }}">
+                  <div>
+                    <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.18em;color:#B7B7C5;margin-bottom:6px">AVAILABLE {{ unitLabel }}</div>
+                    <p style="margin:0 0 12px;font-size:12.5px;color:#6f6f80">{{ availableNote }}</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                      <sc-for list="{{ units }}" as="u" hint-placeholder-count="8">
+                        <button onClick="{{ u.onClick }}" disabled="{{ u.disabled }}" style="{{ u.style }}">{{ u.label }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ isPs5 }}" hint-placeholder-val="{{ false }}">
+                  <label style="display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:12px;background:rgba(5,5,9,0.5);border:1px solid rgba(139,44,255,0.18);cursor:pointer">
+                    <input type="checkbox" checked="{{ extraController }}" onChange="{{ toggleController }}" style="width:18px;height:18px;accent-color:#8B2CFF" />
+                    <span style="font-size:14px;color:#fff;line-height:1.5">Extra controller<br /><span style="font-size:12.5px;color:#6f6f80">{{ controllerNote }}</span></span>
+                    <span style="margin-left:auto;font-family:Rajdhani,sans-serif;font-weight:700;font-size:18px;white-space:nowrap">+{{ controllerTotal }}</span>
+                  </label>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isProjector }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.18em;color:#B7B7C5;margin-bottom:10px">FIXED 3-HOUR SLOTS</div>
+                <div style="display:grid;gap:10px">
+                  <sc-for list="{{ roomSlots }}" as="r" hint-placeholder-count="3">
+                    <button onClick="{{ r.onClick }}" disabled="{{ r.disabled }}" style="{{ r.style }}">
+                      <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:19px;letter-spacing:.04em">{{ r.label }}</span>
+                      <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.14em">{{ r.state }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="margin-top:22px">
+                  <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.18em;color:#B7B7C5;margin-bottom:10px">PEOPLE — MAX 5</div>
+                  <div style="display:flex;gap:8px">
+                    <sc-for list="{{ peopleOptions }}" as="p" hint-placeholder-count="5">
+                      <button onClick="{{ p.onClick }}" style="{{ p.style }}">{{ p.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showDetails }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#11111A;border:1px solid rgba(139,44,255,0.2);border-radius:18px;padding:clamp(20px,2.4vw,30px)">
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;margin:0 0 8px">YOUR DETAILS</h2>
+            <p style="margin:0 0 22px;font-size:13.5px;color:#6f6f80">No account needed. We send confirmation on WhatsApp.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+              <label style="display:grid;gap:8px">
+                <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;color:#B7B7C5">FULL NAME</span>
+                <input value="{{ name }}" onInput="{{ setName }}" placeholder="Your name" style="padding:14px 16px;border-radius:11px;background:rgba(5,5,9,0.6);border:1px solid rgba(139,44,255,0.28);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#00A8FF" />
+              </label>
+              <label style="display:grid;gap:8px">
+                <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;color:#B7B7C5">WHATSAPP NUMBER</span>
+                <input value="{{ phone }}" onInput="{{ setPhone }}" placeholder="10-digit mobile" style="padding:14px 16px;border-radius:11px;background:rgba(5,5,9,0.6);border:1px solid rgba(139,44,255,0.28);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#00A8FF" />
+              </label>
+              <label style="display:grid;gap:8px">
+                <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;color:#B7B7C5">EMAIL — OPTIONAL</span>
+                <input value="{{ email }}" onInput="{{ setEmail }}" placeholder="you@email.com" style="padding:14px 16px;border-radius:11px;background:rgba(5,5,9,0.6);border:1px solid rgba(139,44,255,0.28);color:#fff;font-size:14.5px;outline:none" style-focus="border-color:#00A8FF" />
+              </label>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showPayment }}" hint-placeholder-val="{{ false }}">
+          <section style="background:linear-gradient(160deg,rgba(139,44,255,0.14),rgba(17,17,26,0.98));border:1px solid rgba(176,38,255,0.4);border-radius:18px;padding:clamp(20px,2.4vw,30px)">
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;margin:0 0 20px">PAYMENT</h2>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:18px;border-radius:14px;background:rgba(5,5,9,0.55);border:1px solid rgba(0,168,255,0.3);margin-bottom:22px">
+              <span style="width:9px;height:9px;border-radius:50%;background:#00A8FF;animation:ggPulse 2s ease-in-out infinite"></span>
+              <span style="font-size:14px;color:#B7B7C5">Your slot is held for</span>
+              <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:26px;color:#fff;letter-spacing:.04em">{{ holdClock }}</span>
+              <span style="font-size:13px;color:#6f6f80">If payment isn't completed, the slot returns to available.</span>
+            </div>
+            <div style="display:grid;gap:10px;margin-bottom:24px">
+              <sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="3">
+                <button onClick="{{ m.onClick }}" style="{{ m.style }}">
+                  <span style="font-family:Orbitron,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.1em">{{ m.label }}</span>
+                  <span style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:13px;color:#B7B7C5">{{ m.note }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <button onClick="{{ pay }}" style="width:100%;padding:18px;border:none;border-radius:12px;cursor:pointer;font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;letter-spacing:.14em;color:#fff;background:linear-gradient(100deg,#8B2CFF,#1677FF);box-shadow:0 14px 40px -16px rgba(139,44,255,0.95)" style-hover="transform:translateY(-2px)">PAY {{ totalText }} &amp; CONFIRM</button>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showConfirmed }}" hint-placeholder-val="{{ false }}">
+          <section style="background:#11111A;border:1px solid rgba(61,220,132,0.4);border-radius:18px;padding:clamp(24px,3vw,38px)">
+            <div style="display:inline-flex;align-items:center;gap:10px;padding:8px 15px;border-radius:100px;background:rgba(61,220,132,0.1);border:1px solid rgba(61,220,132,0.4);margin-bottom:22px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#3ddc84"></span>
+              <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.18em;color:#3ddc84">PAYMENT SUCCESSFUL</span>
+            </div>
+            <h2 style="font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(24px,3.2vw,38px);margin:0 0 26px">BOOKING CONFIRMED</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;padding:22px 0;border-top:1px solid rgba(139,44,255,0.16);border-bottom:1px solid rgba(139,44,255,0.16);margin-bottom:24px">
+              <sc-for list="{{ confirmation }}" as="c" hint-placeholder-count="6">
+                <div>
+                  <div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:11px;letter-spacing:.16em;color:#6f6f80;margin-bottom:6px">{{ c.k }}</div>
+                  <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:18px;color:#fff">{{ c.v }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <p style="margin:0 0 26px;font-size:14px;color:#B7B7C5;line-height:1.6">Confirmation sent on WhatsApp{{ emailNote }}. We'll remind you 24 hours and 1 hour before your slot.</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <a href="./Games%20Grid%20Home.dc.html" style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff;padding:16px 26px;border-radius:11px;background:linear-gradient(100deg,#8B2CFF,#1677FF)">MANAGE BOOKING</a>
+              <button onClick="{{ reset }}" style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;color:#fff;padding:16px 26px;border-radius:11px;border:1px solid rgba(139,44,255,0.4);background:transparent;cursor:pointer" style-hover="border-color:#00A8FF;color:#00A8FF">BOOK ANOTHER SESSION</button>
+            </div>
+          </section>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ showSummary }}" hint-placeholder-val="{{ true }}">
+        <aside style="position:sticky;top:96px;background:linear-gradient(170deg,rgba(139,44,255,0.1),rgba(17,17,26,0.98));border:1px solid rgba(139,44,255,0.26);border-radius:18px;padding:clamp(20px,2.2vw,28px)">
+          <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.2em;color:#B026FF;margin-bottom:18px">YOUR BOOKING</div>
+          <div style="display:grid;gap:14px;margin-bottom:20px">
+            <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+              <div style="display:flex;justify-content:space-between;gap:14px;align-items:baseline">
+                <span style="font-size:13px;color:#6f6f80;font-family:Rajdhani,sans-serif;font-weight:600;letter-spacing:.1em">{{ s.k }}</span>
+                <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:16px;text-align:right">{{ s.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:18px;border-top:1px solid rgba(139,44,255,0.2)">
+            <span style="font-family:Orbitron,sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em">TOTAL</span>
+            <span style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:34px;line-height:1">{{ totalText }}</span>
+          </div>
+          <sc-if value="{{ showNext }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ next }}" disabled="{{ nextDisabled }}" style="{{ nextStyle }}">{{ nextLabel }}</button>
+          </sc-if>
+          <sc-if value="{{ hint }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:12px 0 0;font-size:12.5px;color:#6f6f80;text-align:center">{{ hint }}</p>
+          </sc-if>
+        </aside>
+      </sc-if>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const EXP = {
+  ps5: { name: "PS5 GAMING", units: "7 stations", rate: "₹99/hr", perHour: 99, prefix: "PS5", count: 7, players: "1 player per station · 2 with extra controller" },
+  sim: { name: "RACING SIMULATOR", units: "2 simulators", rate: "₹129/hr", perHour: 129, prefix: "SIM", count: 2, players: "1 player per simulator" },
+  room: { name: "PRIVATE PROJECTOR ROOM", units: "1 room · up to 5", rate: "₹1,299", perHour: 0, prefix: "ROOM", count: 1, players: "Up to 5 people" }
+};
+const FROM_HASH = { "#ps5": "ps5", "#sim": "sim", "#simulator": "sim", "#room": "room", "#projector": "room" };
+const OPEN_HOUR = 7, CLOSE_HOUR = 22;
+const ROOM_SLOTS = [
+  { id: "s1", label: "11:30 AM – 2:30 PM" },
+  { id: "s2", label: "3:00 PM – 6:00 PM" },
+  { id: "s3", label: "6:30 PM – 9:30 PM" }
+];
+const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const DOW = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967295; };
+const fmtHour = (h) => { const ap = h >= 12 ? "PM" : "AM"; const hr = h % 12 === 0 ? 12 : h % 12; return hr + ":00 " + ap; };
+const money = (n) => "₹" + n.toLocaleString("en-IN");
+const pad = (n) => String(n).padStart(2, "0");
+const iso = (d) => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+
+class Component extends DCLogic {
+  state = {
+    step: 1, exp: null, date: null, duration: 1, unit: "any", start: null,
+    roomSlot: null, people: 5, extraController: false,
+    name: "", phone: "", email: "", method: "upi",
+    holdLeft: 600, bookingId: null, width: 1440, locked: false,
+    calOpen: false, calOffset: 0, menuOpen: false
+  };
+
+  componentDidMount() {
+    const preset = FROM_HASH[(location.hash || "").toLowerCase()];
+    if (preset) this.setState({ exp: preset, step: 2, duration: preset === "room" ? 3 : 1, locked: true });
+    this._resize = () => this.setState((p) => ({ width: window.innerWidth, menuOpen: window.innerWidth >= 1080 ? false : p.menuOpen }));
+    this._resize();
+    window.addEventListener("resize", this._resize);
+    this._tick = setInterval(() => {
+      this.setState((s) => (s.step === 4 && s.holdLeft > 0 ? { holdLeft: s.holdLeft - 1 } : null));
+    }, 1000);
+  }
+  componentWillUnmount() { window.removeEventListener("resize", this._resize); clearInterval(this._tick); }
+
+  dateList() {
+    const out = []; const now = new Date();
+    for (let i = 0; i < 30; i++) { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i); out.push(d); }
+    return out;
+  }
+
+  unitIds() {
+    const e = EXP[this.state.exp]; if (!e || this.state.exp === "room") return [];
+    return Array.from({ length: e.count }, (_, i) => e.prefix + "-" + String(i + 1).padStart(2, "0"));
+  }
+
+  isBooked(unitId, hour) {
+    return hash(unitId + "|" + this.state.date + "|" + hour) < 0.26;
+  }
+
+  freeAt(hour, unitId) {
+    const ids = unitId === "any" ? this.unitIds() : [unitId];
+    return ids.some((id) => this.isBooked(id, hour) === false);
+  }
+
+  unitFree(unitId, startHour) {
+    if (startHour === null || !this.state.date) return true;
+    for (let h = startHour; h < startHour + this.state.duration; h++) if (this.isBooked(unitId, h)) return false;
+    return true;
+  }
+
+  calTitle() {
+    const now = new Date();
+    const d = new Date(now.getFullYear(), now.getMonth() + this.state.calOffset, 1);
+    return ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"][d.getMonth()] + " " + d.getFullYear();
+  }
+
+  calCells() {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const last = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 29);
+    const first = new Date(now.getFullYear(), now.getMonth() + this.state.calOffset, 1);
+    const daysIn = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < first.getDay(); i++) {
+      cells.push({ label: "", disabled: true, onClick: () => {}, style: "padding:7px 0;background:transparent;border:none" });
+    }
+    for (let day = 1; day <= daysIn; day++) {
+      const d = new Date(first.getFullYear(), first.getMonth(), day);
+      const key = iso(d);
+      const ok = d >= today && d <= last;
+      const active = this.state.date === key;
+      cells.push({
+        label: String(day), disabled: !ok,
+        onClick: () => { if (ok) this.setState({ date: key, start: null, roomSlot: null, unit: "any", calOpen: false }); },
+        style: "padding:7px 0;border-radius:7px;font-family:Rajdhani,sans-serif;font-weight:700;font-size:12.5px;transition:all .18s ease;" + (active
+          ? "cursor:pointer;color:#fff;background:linear-gradient(160deg,#8B2CFF,#1677FF);border:1px solid transparent;"
+          : ok ? "cursor:pointer;color:#fff;background:rgba(5,5,9,0.6);border:1px solid rgba(139,44,255,0.22);"
+            : "cursor:not-allowed;color:#3a3a45;background:transparent;border:1px solid transparent;")
+      });
+    }
+    return cells;
+  }
+
+  runFree(startHour) {
+    const dur = this.state.duration;
+    if (startHour + dur > CLOSE_HOUR) return false;
+    const ids = this.state.unit === "any" ? this.unitIds() : [this.state.unit];
+    return ids.some((id) => {
+      for (let h = startHour; h < startHour + dur; h++) if (this.isBooked(id, h)) return false;
+      return true;
+    });
+  }
+
+  assignedUnit() {
+    if (this.state.exp === "room") return "PROJECTOR ROOM";
+    if (this.state.unit !== "any") return this.state.unit;
+    const ids = this.unitIds();
+    const found = ids.find((id) => {
+      for (let h = this.state.start; h < this.state.start + this.state.duration; h++) if (this.isBooked(id, h)) return false;
+      return true;
+    });
+    return found || ids[0];
+  }
+
+  roomTaken(slotId) { return hash("room|" + this.state.date + "|" + slotId) < 0.3; }
+
+  total() {
+    const e = EXP[this.state.exp]; if (!e) return 0;
+    if (this.state.exp === "room") return 1299;
+    return e.perHour * this.state.duration + (this.state.exp === "ps5" && this.state.extraController ? 69 * this.state.duration : 0);
+  }
+
+  dateLabel() {
+    if (!this.state.date) return "—";
+    const d = new Date(this.state.date + "T00:00:00");
+    return DOW[d.getDay()] + " " + d.getDate() + " " + MONTHS[d.getMonth()];
+  }
+
+  timeLabel() {
+    if (this.state.exp === "room") {
+      const s = ROOM_SLOTS.find((r) => r.id === this.state.roomSlot);
+      return s ? s.label : "—";
+    }
+    if (this.state.start === null) return "—";
+    return fmtHour(this.state.start) + " – " + fmtHour(this.state.start + this.state.duration);
+  }
+
+  canAdvance() {
+    const s = this.state;
+    if (s.step === 1) return !!s.exp;
+    if (s.step === 2) return s.exp === "room" ? !!(s.date && s.roomSlot) : !!(s.date && s.start !== null);
+    if (s.step === 3) return s.name.trim().length > 1 && s.phone.replace(/\D/g, "").length >= 10;
+    return true;
+  }
+
+  hintText() {
+    const s = this.state;
+    if (s.step === 1) return "Pick an experience to continue";
+    if (s.step === 2) return s.exp === "room" ? "Select a date and an available slot" : "Select a date and an available start time";
+    if (s.step === 3) return "Name and WhatsApp number required";
+    return "";
+  }
+
+  chip(active, extra) {
+    const base = "font-family:Rajdhani,sans-serif;font-weight:700;font-size:14px;letter-spacing:.06em;padding:12px 16px;border-radius:10px;cursor:pointer;transition:all .2s ease;";
+    return base + (active
+      ? "color:#fff;background:linear-gradient(100deg,#8B2CFF,#1677FF);border:1px solid transparent;"
+      : "color:#B7B7C5;background:rgba(5,5,9,0.5);border:1px solid rgba(139,44,255,0.24);") + (extra || "");
+  }
+
+  renderVals() {
+    const s = this.state;
+    const narrow = s.width < 900;
+    const e = EXP[s.exp];
+    const hourly = !!e && s.exp !== "room";
+
+    return {
+      gridCols: narrow || s.step === 5 ? "1fr" : "minmax(0,1.6fr) minmax(300px,0.9fr)",
+
+      wideNav: s.width >= 1080,
+      narrowNav: s.width < 1080,
+      menuOpen: s.menuOpen && s.width < 1080,
+      toggleMenu: () => this.setState((p) => ({ menuOpen: !p.menuOpen })),
+
+      pageTitle: e && s.locked ? "BOOK " + e.name : "BOOK YOUR SLOT",
+      lockedExp: s.locked && !!e,
+      lockedName: e ? e.name : "",
+      lockedUnits: e ? e.units : "",
+      lockedRate: e ? e.rate : "",
+      playerNote: e ? e.players : "",
+      stepOffset: s.locked ? 0 : 1,
+
+      steps: (s.locked ? ["DATE & TIME", "DETAILS", "PAYMENT"] : ["EXPERIENCE", "DATE & TIME", "DETAILS", "PAYMENT"]).map((label, i) => {
+        const n = i + (s.locked ? 2 : 1); const done = s.step > n; const active = s.step === n;
+        return {
+          n: "0" + (i + 1), label,
+          style: "display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;" + (active
+            ? "background:linear-gradient(100deg,rgba(139,44,255,0.9),rgba(22,119,255,0.9));color:#fff;border:1px solid transparent;"
+            : done ? "background:rgba(61,220,132,0.08);color:#3ddc84;border:1px solid rgba(61,220,132,0.3);"
+              : "background:rgba(17,17,26,0.9);color:#6f6f80;border:1px solid rgba(139,44,255,0.16);")
+        };
+      }),
+
+      _unusedSteps: ["EXPERIENCE", "DATE & TIME", "DETAILS", "PAYMENT"].map((label, i) => {
+        const n = i + 1; const done = s.step > n; const active = s.step === n;
+        return {
+          n: "0" + n, label,
+          style: "display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;" + (active
+            ? "background:linear-gradient(100deg,rgba(139,44,255,0.9),rgba(22,119,255,0.9));color:#fff;border:1px solid transparent;"
+            : done ? "background:rgba(61,220,132,0.08);color:#3ddc84;border:1px solid rgba(61,220,132,0.3);"
+              : "background:rgba(17,17,26,0.9);color:#6f6f80;border:1px solid rgba(139,44,255,0.16);")
+        };
+      }),
+
+      showRoomHero: s.exp === "room" && s.step < 5,
+      roomFeatures: ['110" SCREEN', "SOUNDBAR", "PS5 GAMES", "MOVIES / OTT", "SOFA", "BEAN BAGS", "DRINKS × 5", "POPCORN × 5"],
+
+      showExperience: s.step === 1 && !s.locked,
+      showSchedule: s.step === 2,
+      showDetails: s.step === 3,
+      showPayment: s.step === 4,
+      showConfirmed: s.step === 5,
+      showSummary: s.step < 5,
+
+      experienceOptions: Object.keys(EXP).map((k) => ({
+        name: EXP[k].name, units: EXP[k].units, rate: EXP[k].rate,
+        onClick: () => this.setState({ exp: k, start: null, roomSlot: null, unit: "any", duration: k === "room" ? 3 : 1 }),
+        style: "display:flex;flex-direction:column;gap:5px;padding:20px;border-radius:14px;cursor:pointer;text-align:left;transition:all .25s ease;" + (s.exp === k
+          ? "background:linear-gradient(160deg,rgba(139,44,255,0.22),rgba(5,5,9,0.6));border:1px solid #B026FF;color:#fff;"
+          : "background:rgba(5,5,9,0.5);border:1px solid rgba(139,44,255,0.2);color:#fff;")
+      })),
+
+      quickDates: this.dateList().slice(0, 5).map((d, i) => {
+        const key = iso(d); const active = s.date === key;
+        return {
+          top: i === 0 ? "TODAY" : i === 1 ? "TOMORROW" : DOW[d.getDay()],
+          bottom: d.getDate() + " " + MONTHS[d.getMonth()],
+          onClick: () => this.setState({ date: key, start: null, roomSlot: null, unit: "any", calOpen: false }),
+          style: "display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 8px;border-radius:12px;cursor:pointer;transition:all .2s ease;" + (active
+            ? "background:linear-gradient(160deg,#8B2CFF,#1677FF);color:#fff;border:1px solid transparent;"
+            : "background:rgba(5,5,9,0.5);color:#B7B7C5;border:1px solid rgba(139,44,255,0.2);")
+        };
+      }),
+
+      otherDate: s.date && !this.dateList().slice(0, 5).some((d) => iso(d) === s.date) ? this.dateLabel() : false,
+
+      openCal: () => this.setState((p) => ({ calOpen: !p.calOpen })),
+      closeCal: () => this.setState({ calOpen: false }),
+      calOpen: s.calOpen,
+      calButtonStyle: "display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 8px;border-radius:12px;cursor:pointer;transition:all .2s ease;" + (s.calOpen
+        ? "background:rgba(139,44,255,0.2);color:#fff;border:1px solid #B026FF;"
+        : "background:rgba(5,5,9,0.5);color:#B7B7C5;border:1px dashed rgba(139,44,255,0.4);"),
+      calTitle: this.calTitle(),
+      dowLabels: DOW.map((d) => d[0]),
+      navStyle: "width:28px;height:28px;flex:none;border-radius:8px;background:rgba(5,5,9,0.6);border:1px solid rgba(139,44,255,0.25);color:#fff;cursor:pointer;font-size:15px;line-height:1;padding:0",
+      prevDisabled: s.calOffset <= 0,
+      nextMonthDisabled: s.calOffset >= 1,
+      prevMonth: () => this.setState((p) => ({ calOffset: Math.max(0, p.calOffset - 1) })),
+      nextMonth: () => this.setState((p) => ({ calOffset: Math.min(1, p.calOffset + 1) })),
+      calCells: this.calCells(),
+
+      isHourly: hourly,
+      isProjector: s.exp === "room",
+      isPs5: s.exp === "ps5",
+
+      durations: [1, 2, 3, 4, 5].map((n) => ({
+        label: n + (n === 1 ? " HOUR" : " HOURS"),
+        onClick: () => this.setState({ duration: n, start: null }),
+        style: this.chip(s.duration === n)
+      })),
+
+      unitLabel: s.exp === "sim" ? "SIMULATOR" : "PS5 STATION",
+      unitWord: s.exp === "sim" ? "simulator" : "station",
+      durationText: s.duration + (s.duration === 1 ? " hour" : " hours"),
+
+      showUnits: hourly && !!s.date && s.start !== null,
+      availableNote: s.exp === "sim"
+        ? "One driver per simulator. Leave it on Any available and we'll assign the free rig."
+        : "One player per station — add an extra controller below for a second player.",
+
+      units: [{ id: "any", label: "ANY AVAILABLE", free: true }].concat(this.unitIds().map((id) => ({
+        id, label: id, free: this.unitFree(id, s.start)
+      }))).map((u) => ({
+        label: u.free ? u.label : u.label + " · BOOKED",
+        disabled: !u.free,
+        onClick: () => { if (u.free) this.setState({ unit: u.id }); },
+        style: u.free ? this.chip(s.unit === u.id)
+          : "font-family:Rajdhani,sans-serif;font-weight:700;font-size:14px;letter-spacing:.06em;padding:12px 16px;border-radius:10px;cursor:not-allowed;color:#FF5B6E;background:rgba(255,91,110,0.06);border:1px solid rgba(255,91,110,0.24);"
+      })),
+
+      timeSlots: Array.from({ length: CLOSE_HOUR - OPEN_HOUR }, (_, i) => OPEN_HOUR + i).map((h) => {
+        const ok = s.date ? this.runFree(h) : false;
+        const active = s.start === h;
+        return {
+          label: fmtHour(h), disabled: !ok,
+          onClick: () => { if (ok) this.setState({ start: h, unit: this.unitFree(s.unit, h) || s.unit === "any" ? s.unit : "any" }); },
+          style: "font-family:Rajdhani,sans-serif;font-weight:700;font-size:14px;padding:14px 8px;border-radius:10px;transition:all .2s ease;" + (active
+            ? "cursor:pointer;color:#fff;background:linear-gradient(100deg,#8B2CFF,#1677FF);border:1px solid transparent;"
+            : ok ? "cursor:pointer;color:#3ddc84;background:rgba(61,220,132,0.07);border:1px solid rgba(61,220,132,0.35);"
+              : "cursor:not-allowed;color:#FF5B6E;background:rgba(255,91,110,0.06);border:1px solid rgba(255,91,110,0.25);text-decoration:line-through;")
+        };
+      }),
+
+      extraController: s.extraController,
+      toggleController: () => this.setState((p) => ({ extraController: !p.extraController })),
+
+      roomSlots: ROOM_SLOTS.map((r) => {
+        const taken = s.date ? this.roomTaken(r.id) : false;
+        const active = s.roomSlot === r.id;
+        return {
+          label: r.label, state: taken ? "BOOKED" : active ? "SELECTED" : "AVAILABLE", disabled: taken,
+          onClick: () => { if (!taken) this.setState({ roomSlot: r.id }); },
+          style: "display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 20px;border-radius:12px;transition:all .2s ease;" + (active
+            ? "cursor:pointer;color:#fff;background:linear-gradient(100deg,rgba(139,44,255,0.85),rgba(22,119,255,0.85));border:1px solid transparent;"
+            : taken ? "cursor:not-allowed;color:#FF5B6E;background:rgba(255,91,110,0.06);border:1px solid rgba(255,91,110,0.25);"
+              : "cursor:pointer;color:#3ddc84;background:rgba(61,220,132,0.07);border:1px solid rgba(61,220,132,0.32);")
+        };
+      }),
+
+      peopleOptions: [1, 2, 3, 4, 5].map((n) => ({
+        label: String(n),
+        onClick: () => this.setState({ people: n }),
+        style: this.chip(s.people === n, "min-width:52px;text-align:center;")
+      })),
+
+      name: s.name, phone: s.phone, email: s.email,
+      setName: (ev) => this.setState({ name: ev.target.value }),
+      setPhone: (ev) => this.setState({ phone: ev.target.value }),
+      setEmail: (ev) => this.setState({ email: ev.target.value }),
+
+      holdClock: Math.floor(Math.max(0, s.holdLeft) / 60) + ":" + String(Math.max(0, s.holdLeft) % 60).padStart(2, "0"),
+      payMethods: [
+        { id: "upi", label: "UPI", note: "GPay · PhonePe · Paytm" },
+        { id: "card", label: "CARD", note: "Debit or credit" },
+        { id: "counter", label: "PAY AT COUNTER", note: "Slot held 30 minutes" }
+      ].map((m) => ({
+        label: m.label, note: m.note,
+        onClick: () => this.setState({ method: m.id }),
+        style: "display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border-radius:12px;cursor:pointer;transition:all .2s ease;" + (s.method === m.id
+          ? "color:#fff;background:rgba(139,44,255,0.16);border:1px solid #B026FF;"
+          : "color:#B7B7C5;background:rgba(5,5,9,0.5);border:1px solid rgba(139,44,255,0.2);")
+      })),
+      pay: () => this.setState({ step: 5, bookingId: "GG-" + String(Math.floor(1000 + hash(String(Date.now())) * 8999)) }),
+
+      summary: [
+        { k: "EXPERIENCE", v: e ? e.name : "—" },
+        { k: "DATE", v: this.dateLabel() },
+        { k: "TIME", v: this.timeLabel() },
+        { k: s.exp === "room" ? "ROOM" : "STATION", v: s.exp === "room" ? "Projector room" : (s.start !== null || s.unit !== "any" ? this.assignedUnit() : "Any available") },
+        { k: "PLAYERS", v: s.exp === "room" ? s.people + " of 5" : s.exp === "ps5" ? (s.extraController ? "2 players" : "1 player") : "1 player" }
+      ].concat(s.exp === "ps5" && s.extraController ? [{ k: "EXTRA CONTROLLER", v: money(69 * s.duration) }] : []),
+
+      controllerTotal: money(69 * s.duration),
+      controllerNote: "₹69 × " + s.duration + (s.duration === 1 ? " hour" : " hours") + " — one station seats 1 player, add a controller for a 2nd",
+
+      totalText: money(this.total()),
+
+      showNext: s.step < 4,
+      next: () => { if (this.canAdvance()) this.setState((p) => ({ step: Math.min(4, p.step + 1), holdLeft: p.step === 3 ? 600 : p.holdLeft })); },
+      nextDisabled: !this.canAdvance(),
+      nextLabel: s.step === 3 ? "HOLD SLOT & PAY" : "CONTINUE",
+      nextStyle: "width:100%;margin-top:20px;padding:17px;border:none;border-radius:12px;font-family:Orbitron,sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.14em;transition:all .25s ease;" + (this.canAdvance()
+        ? "cursor:pointer;color:#fff;background:linear-gradient(100deg,#8B2CFF,#1677FF);box-shadow:0 14px 36px -18px rgba(139,44,255,0.95);"
+        : "cursor:not-allowed;color:#6f6f80;background:rgba(5,5,9,0.6);box-shadow:none;"),
+      hint: this.canAdvance() ? false : this.hintText(),
+
+      confirmation: [
+        { k: "BOOKING ID", v: s.bookingId || "—" },
+        { k: "EXPERIENCE", v: e ? e.name : "—" },
+        { k: "DATE", v: this.dateLabel() },
+        { k: "TIME", v: this.timeLabel() },
+        { k: s.exp === "room" ? "ROOM" : "STATION", v: this.assignedUnit() },
+        { k: "CUSTOMER", v: s.name || "—" },
+        { k: "AMOUNT PAID", v: money(this.total()) }
+      ],
+      emailNote: s.email ? " and email" : "",
+
+      reset: () => this.setState({ step: s.locked ? 2 : 1, exp: s.locked ? s.exp : null, date: null, start: null, roomSlot: null, unit: "any", duration: s.locked && s.exp === "room" ? 3 : 1, extraController: false, holdLeft: 600, bookingId: null }),
+
+      playersLine: s.exp === "room" ? s.people + " of 5 people" : s.exp === "ps5" ? (s.extraController ? "2 players" : "1 player") : "1 player"
+    };
+  }
+}
+
+</script>
+</body>
+</html>
